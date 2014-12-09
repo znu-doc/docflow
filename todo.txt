@@ -1,0 +1,4 @@
+1. Create Task 'asOffice'
+2. Create Role 'Office'
+3. Assign Task 'asOffice' to Role 'Office'
+4. Assign Role 'Office' to required users

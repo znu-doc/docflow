@@ -1,0 +1,40 @@
+.block_departments {
+  min-height: 250px; 
+  max-height: 250px; 
+  height: 250px; 
+  overflow-y: scroll;
+}
+
+.dept_item {
+  display:none; 
+  border: 1px solid grey; 
+  background-color: rgb(245,245,245); 
+  cursor: pointer;
+}
+
+.dept_text_hidden {
+  display: none;
+}
+
+.check_row {
+  display: none;
+}
+
+.dept_check {
+  width: 100% !important;
+  height: 20px;
+}
+
+.alert_info {
+  font-family: "Tahoma";
+  font-size: 8pt;
+}
+
+.chosen_depts {
+  display: none;
+  margin-bottom: 3px;
+}
+
+.dept_label_item {
+  width: 90%;
+}

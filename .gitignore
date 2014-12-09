@@ -1,0 +1,8 @@
+assets/
+docs/
+/nbproject/private/
+!/protected/extensions/yiichat/assets/
+!/framework/gii/assets/
+!/framework/zii/widgets/assets/
+!/protected/extensions/x-editable/assets/
+!/protected/extensions/bootstrap/assets/

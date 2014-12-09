@@ -1,0 +1,234 @@
+@font-face {
+    font-family: Inconsolata;
+    src: url("../css/Inconsolata.otf") format("opentype");
+    font-weight:100;
+}
+
+@font-face {
+    font-family: Opengosttypeb;
+    src: url("../css/opengosttypeb-regular.ttf");
+}
+
+body {
+background-image: url('../images/clouds.jpg');
+background-attachment: fixed;
+background-color: rgba(170,220,255,1);
+}
+
+#content{
+  width: 100%;
+}
+
+#smallmenu_general {
+    font-size: 7pt;
+    background-color: rgba(255,255,255,0.8);
+    background: white\9;
+    border-radius: 5px; 
+    position: fixed; 
+    top: 50px; left: 0;
+    width: 10px;
+}
+
+#menu_general {
+  font-size: 9pt;
+  background-color: rgba(255,255,255,0.8);
+  background: white\9;
+  border-radius: 5px;
+}
+
+.item120 {
+    text-align: left;
+}
+
+/**
+Узгодження з фоном
+*/
+.dfbox {
+  background-color: rgba(255,255,255,0.8);
+  background: white\9;
+  font-size: 10pt;
+  font-family: Verdana;
+  border-radius: 5px;
+  padding: 5px;
+  margin-top: 3px;
+  word-wrap: break-word;
+}
+
+.dfheader {
+  height: 20px !important;
+  min-height: 20px !important;
+  /*background-color: #EFEFFF;*/
+  padding: 0px 10px 0px 10px;
+  /*border-radius: 10px;
+  border: 1px solid #ADADFF;*/
+  font-size: 8pt;
+  font-family: Arial;
+  //font-style: italic;
+  word-wrap: break-word;
+}
+
+.dfmetaheader{
+  font-size: 18pt;
+  text-align: center;
+  border-radius: 0px;
+  border: 1px solid #ADADFF;
+  background-color: rgba(233,233,233,0.5);
+  background: white\9;
+  word-wrap: break-word;
+}
+
+    
+    .editable-empty{
+      color: grey;
+      background-color: rgba(70,200,255,0.3);
+      background: white\9;
+      border-radius: 5px;
+    }
+    
+    .editable-click{
+      border-bottom: 0px !important;
+      background-color: rgba(70,200,255,0.3);
+      background: white\9;
+      border-radius: 5px;
+    }
+    .editable-click:hover{
+      border-bottom: 1px dashed grey !important;
+      background-color: rgba(70,200,255,0.3);
+      background: white\9;
+      border-radius: 5px;
+    }
+/******************************************************************************/
+
+/**
+Узгодження табличних віджетів з фоном
+*/  
+    .even {
+      background-color: rgba(210,210,230,0.6);
+      background: white\9;
+    }
+    
+    .odd {
+      background-color: rgba(240,240,230,0.7);
+      background: lightblue\9;
+    }
+    
+    tr.odd > td {
+      background-color: inherit !important;
+    }
+    
+    tr.even > td {
+      background-color: inherit !important;
+    }
+    
+    tr:enabled{
+      background-color: rgba(230,230,230,0.3) !important;
+      background: white\9 !important;
+    }
+    
+    thead {
+      background-color: rgba(255,255,255,0.8) !important;
+      background: white\9 !important;
+    }
+    
+    .summary {
+      background-color: rgba(255,255,255,0.8) !important;
+      background: white\9 !important;
+      border-radius: 4px;
+    }
+    
+    .pagination {
+      margin: 0px !important;
+    }
+    
+    h1 {
+      background-color: rgba(255,255,255,0.8) !important;
+      background: white\9 !important;
+      border-radius: 4px;
+      font-size: 16pt;
+    }
+    
+    h2 {
+      background-color: rgba(255,255,255,0.8) !important;
+      background: white\9 !important;
+      border-radius: 4px;
+      font-family: Verdana;
+      font-size: 14pt;
+    }
+    
+    .form {
+      background-color: rgba(255,255,255,0.8) !important;
+      border-radius: 4px;
+      padding: 10px;
+    }
+/******************************************************************************/
+
+/* _newdoc */
+
+  TABLE.card{
+    border-collapse: collapse;
+    margin: 0px auto;
+    width: 7.25in;
+    border: 3px solid black;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    font-family: 'Times New Roman';
+  }
+  TD.common {
+    border: 3px solid black;
+    border-left-width: 0px;
+    border-right-width: 3px;
+  }
+  TD.half{
+    width: 50%;
+  }
+  TD.last {
+    border-right-width: 0px !important;
+  }
+  
+  .card_head {
+    width: 4.7in; 
+    margin: 0px auto; 
+    font-size: 9pt; 
+    font-weight: bold;
+  }
+  
+  .newdoc_submit{
+    width: 200px; 
+    margin: 0px auto; 
+    margin-top: 20px;
+  }
+
+/******************************************************************************/
+#page {
+    padding-top: 5px;
+}
+
+/******************************************************************************/
+  #check_save_group{
+    float: left;
+    margin-right: 4px;
+  }
+  
+  #select_group_checkbox{
+    float: left;
+    margin-right: 4px;
+  }
+  
+  .select_existing_group {
+    font-size: 8pt; 
+    font-family: "Verdana";
+  }
+  
+/*****************/
+/*  animation ("radioactive" pulsing element)  */
+@-webkit-keyframes wkPulse {
+  from { margin-top: 0px; -webkit-box-shadow: 0 0 30px #333; }
+  50% { margin-top: 3px; -webkit-box-shadow: 0 0 60px blue; }
+  to { margin-top: 0px; -webkit-box-shadow: 0 0 30px #333; }
+}
+
+.animated{
+  -webkit-animation-name: wkPulse;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-iteration-count: infinite;
+}

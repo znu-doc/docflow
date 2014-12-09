@@ -1,0 +1,118 @@
+select.input-medium {
+  width: 400px !important;
+}
+.label_dept {
+  overflow:hidden;
+  width: 50%;
+  margin-top: 2px;
+}
+
+#DateFields{
+  border: 1px solid grey;
+  margin-bottom: 5px;
+}
+#calendar_preview_block{
+  overflow: auto;
+  max-height: 400px;
+}
+
+#calendar_msg_block {
+  overflow: auto;
+  font-family: Verdana;
+  font-size: 7pt;
+  max-height: 400px;
+}
+
+#DateSmartField{
+  display: inline;
+}
+#StartTimeField{
+  display: inline;
+  width: 60px;
+}
+#FinishTimeField{
+  display: inline;
+  width: 60px;
+}
+.calendar_preview {
+  display: inline-table;
+  margin-left: 5px;
+  border-spacing: 3px;
+  border-collapse: separate;
+}
+.calendar_preview > tbody > tr > td{
+  height: 20px  !important;
+  margin: 0px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  text-align: center;
+  border-radius: 3px;
+  border: 1px solid rgba(192,192,192,0.5);
+  font-size: 7pt;
+}
+.calendar_preview > thead > tr > th{
+  margin: 0px;
+  padding: 0px;
+  border-radius: 3px;
+  border: 1px solid rgba(192,192,192,0.1);
+  font-size: 7pt;
+  text-align: center;
+}
+.calendar_preview > tbody > tr > td.passive{
+  color: #AAAAAA;
+}
+.calendar_preview > tbody > tr > td.extra_highlighted{
+  border: 1px solid blue;
+}
+.calendar_preview > tbody > tr > td.highlighted{
+  border: 1px solid red;
+}
+span.CtrId{
+  display: none;
+}
+
+#_AddedItemsArea {
+  border: 1px solid grey;
+  height: 200px;
+  overflow: auto;
+}
+#_FoundItemsArea {
+  border: 1px solid grey;
+  height: 200px;
+  overflow: auto;
+}
+#_AddedItemsArea1 {
+  border: 1px solid grey;
+  height: 200px;
+  overflow: auto;
+}
+#_FoundItemsArea1 {
+  border: 1px solid grey;
+  height: 200px;
+  overflow: auto;
+}
+
+.NoFlow{
+  color: rgb(120,100,100);
+}
+
+.invited_descrs_comment {
+  height: 16px !important;
+  font-size: 8pt !important;
+  width: 20px !important;
+  padding: 1px !important;
+  margin-bottom: 0px !important;
+}
+
+.organizer_descrs_comment{
+  display: none !important;
+}
+
+.CtrSubBulletNoFlow {
+  color: rgb(255,0,0) !important;
+}
+.CtrSubBullet {
+  color: rgb(0,0,255) !important;
+}
