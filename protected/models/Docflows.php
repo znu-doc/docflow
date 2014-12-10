@@ -272,13 +272,8 @@ class Docflows extends CActiveRecord {
    */
   public function getInboxCriteria(){
     $criteria = new CDbCriteria();
-    $model_Docflowgroupdepts = new Docflowgroupdepts();
-    $model_Docflowgroupdepts->MyDeptIDs = $this->MyDeptIDs;
-    $group_ids = $model_Docflowgroupdepts->search_ids();
-    $criteria->compare('DocFlowGroupID',$group_ids);
-    if (empty($group_ids)){
-      $criteria->compare('DocFlowGroupID',-1);
-    }
+    $criteria->addCondition('t.DocFlowGroupID IN ((select docflowgroupdepts.DocFlowGroupID from docflowgroupdepts '
+      .'where docflowgroupdepts.DeptID IN ('. $this->MyDeptIDs . ')))');
     return $criteria;
   }
   

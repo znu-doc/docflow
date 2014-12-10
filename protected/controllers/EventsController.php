@@ -44,11 +44,11 @@ class EventsController extends Controller {
             'roles' => array('Event'),
         ),
         array('allow', //
-            'actions' => array('eventdatedelete', 'delete'),
+            'actions' => array('eventdatedelete', 'delete','attachmentrm'),
             'roles' => array('Event'),
         ),
         array('allow', //
-            'actions' => array('index','admin'),
+            'actions' => array('index','admin','attachment'),
             'users' => array('@'),
         ),
         array('deny', // deny all users
@@ -111,6 +111,37 @@ class EventsController extends Controller {
       if (empty($model->event_dates)){
         throw new CHttpException(400, 
           'Помилка збереження заходу : невірно вказана дата');
+      }
+      $att = CUploadedFile::getInstance($model, 'attachment');
+      if ( $att !== null){
+	$file = new Files();
+	$username = trim(Yii::app()->user->name);
+	$md5_name = md5_file($att->getTempName());
+	$ext = $att->extensionName;
+	$new_filename = $file->folder.$username.DIRECTORY_SEPARATOR.$md5_name.'.'.$ext;
+	$folder = $file->folder.$username;
+	if (!is_dir($folder)){
+	  mkdir($folder);
+	}
+	$file->FileName = $att->getTempName();
+	if (!is_dir($folder) || ($att->saveAs($new_filename) !== true)){
+	  throw new CHttpException(400, 
+	    'Помилка збереження заходу : не вдалось зберегти прикріплений файл ^ ' . $att->getTempName());
+	}
+	$file->FileLocation = $username.DIRECTORY_SEPARATOR.$md5_name.'.'.$ext;
+	$file->UserID = Yii::app()->user->id;
+	$file->FileVisibility = 1;
+	$file->file_itself = $att;
+	$new_quota_size = $this->RecountUserQuota(Yii::app()->user->id, 
+		-($att->size) / (1024.0 * 1024.0));
+	if (!$file->save()){
+	  throw new CHttpException(400, 
+	    'Помилка збереження заходу : не вдалось зберегти прикріплений файл.');
+	}
+	if ($model->FileID > 0){
+	  $model->attfile->delete();
+	}
+	$model->FileID = $file->idFile;
       }
       $model->UserID = Yii::app()->user->id;
       if ($model->save()){
@@ -194,6 +225,33 @@ class EventsController extends Controller {
     $this->render('admin', array(
         'model' => $model,
     ));
+  }
+  
+  public function actionAttachment($id){
+    $model = Events::model()->findByPk($id);
+    if (!$model){
+	throw new CHttpException(404, 
+	  'Захід з #'.$id.' не знайдено.');
+    }
+    if ($model->FileID){
+      $this->redirect(Yii::app()->CreateUrl("/files/DownloadFile",array('id' => $model->FileID)));
+    } else {
+      $this->redirect(Yii::app()->CreateUrl("/events/index",array('id' => $model->idEvent)));
+    }
+  }
+  
+  public function actionAttachmentrm($id){
+    $model = Events::model()->findByPk($id);
+    if (!$model){
+	throw new CHttpException(404, 
+	  'Захід з #'.$id.' не знайдено.');
+    }
+    if ($model->FileID){
+      $model->attfile->delete();
+      $model->FileID = null;
+      $model->save();
+    }
+    $this->redirect(Yii::app()->CreateUrl("events/index",array('id' => $model->idEvent)));
   }
 
   /**

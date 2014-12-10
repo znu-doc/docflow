@@ -134,6 +134,9 @@
   $eventscreate_form = $this->BeginWidget(
   'bootstrap.widgets.TbActiveForm', array(
     'id' => 'events-form',
+    'htmlOptions' => array(
+      'enctype' => 'multipart/form-data',
+    ),
     'action' => '',
     'enableAjaxValidation' => false,
    )
@@ -404,6 +407,31 @@
       </div>
     </div>
     <hr/>
+    <div class='row-fluid' style="text-align: center;">
+      <div class="span6">
+	<?php
+	if (!$model->FileID){
+	?>
+	<div class="dfheader">Можна прикріпити один файл (необов`язково)</div>
+	<?php
+	} else {
+	?>
+	<div class="dfheader">
+	<?php
+	echo CHtml::link("Файл",Yii::app()->CreateUrl('/events/attachment',array('id' => $model->idEvent)));
+	?> прикріплено ,можна замінити 
+	<?php
+	  if ($model->attfile->UserID == Yii::app()->user->id){
+	    echo "чи ".CHtml::link("видалити",Yii::app()->CreateUrl('/events/attachmentrm',array('id' => $model->idEvent)),
+	      array("style" => "color: red;"));
+	  }
+	?> (необов`язково)</div>
+	<?php
+	}
+	echo $eventscreate_form->fileField($model,"attachment");
+	?>
+      </div>
+    </div>
     <div class='row-fluid' style="text-align: center;">
       <?php
       if ($model->isNewRecord){

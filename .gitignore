@@ -6,3 +6,7 @@ docs/
 !/framework/zii/widgets/assets/
 !/protected/extensions/x-editable/assets/
 !/protected/extensions/bootstrap/assets/
+!/protected/extensions/bootstrap/assets/js/ckeditor/samples/assets/
+!/protected/extensions/bootstrap/assets/js/ckeditor/plugins/uicolor/yui/assets/
+!/protected/extensions/bootstrap/assets/js/ckeditor/plugins/imagepaste/docs/
+!/protected/extensions/yiichat/assets/

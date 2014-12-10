@@ -67,7 +67,7 @@ class Documents extends CActiveRecord {
     DocumentFiles::model()->deleteAll('DocumentID='.$this->idDocument);
     Docflowanswers::model()->deleteAll('DocumentID='.$this->idDocument);
     //видалення всіх контрольних відміток
-    ControlMark::model()->deleteAll('DocumentID = ' . $dmodel->idDocument);
+    ControlMark::model()->deleteAll('DocumentID = ' . $this->idDocument);
     return parent::beforeDelete();
   }
 

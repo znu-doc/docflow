@@ -13,12 +13,14 @@
  * @property string $StartTime
  * @property string $FinishTime
  * @property integer $ExternalID
+ * @property string $NewsUrl
  * @property integer $UserID
  * @property string $Created
  * @property string $ResponsibleContacts
  *
  * The followings are the available model relations:
- * @property SysUsers $user
+ * @property User $user
+ * @property Files $attfile
  * @property Eventkinds $eventKind
  * @property Eventdates $eventDates
  */
@@ -41,6 +43,7 @@ class Events extends CActiveRecord
      "пт" => "щоп`ятниці",
      "сб" => "щосуботи",
   );
+  public $attachment;
   /**
    * Returns the static model of the specified AR class.
    * @param string $className active record class name.
@@ -207,6 +210,7 @@ class Events extends CActiveRecord
       'user' => array(self::BELONGS_TO, 'User', 'UserID'),
       'eventKind' => array(self::BELONGS_TO, 'Eventkinds', 'EventKindID'),
       'eventType' => array(self::BELONGS_TO, 'Eventtypes', 'EventTypeID'),
+      'attfile' => array(self::BELONGS_TO, 'Files', 'FileID'),
       'eventDates' => array(self::HAS_MANY, 'Eventdates', 'EventID'),
     );
   }

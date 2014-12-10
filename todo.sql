@@ -1,5 +1,5 @@
 set names utf8;
-
+/*
 alter table events add ResponsibleContacts VARCHAR(255) NULL;
 
 alter table events add StartYear INT(11) DEFAULT -1 AFTER EventTime;
@@ -80,3 +80,5 @@ alter table eventorganizers drop foreign key `fk2_eventorganizers_DeptID`;
 
  alter table invited add Seets int null;
 
+*/
+ alter table events change DocumentID FileID INT(11) NULL AFTER ResponsibleContacts;

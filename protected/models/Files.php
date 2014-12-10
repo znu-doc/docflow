@@ -29,12 +29,7 @@ class Files extends CActiveRecord {
   public $folder;
   
   public function init(){
-    $this->folder = Yii::app()->getBasePath()
-      .DIRECTORY_SEPARATOR
-      .'..'
-      .DIRECTORY_SEPARATOR
-      .'docs'
-      .DIRECTORY_SEPARATOR;
+    $this->folder = Yii::app()->params['docPath'];
     return parent::init();
   }
 
@@ -51,10 +46,25 @@ class Files extends CActiveRecord {
   
   public function beforeDelete(){
     DocumentFiles::model()->deleteAll('FileID='.$this->idFile);
-    unlink($this->folder . $this->FileLocation);
+    if (is_file($this->folder . $this->FileLocation)){
+      $size = filesize($this->folder . $this->FileLocation);
+      $udmodel = Userdepartment::model()->find('UserID=' . Yii::app()->user->id);
+      if (!$udmodel) {
+	$udmodel = new Userdepartment();
+	$udmodel->quota = 1000;
+	$udmodel->UserID = Yii::app()->user->id;
+	$udmodel->DeptID = 1;
+      }
+      $udmodel->quota += $size;
+      if (!$udmodel->save()){
+	throw new CHttpException(404, 'Помилка переобчислення квоти.');
+      }
+      unlink($this->folder . $this->FileLocation);
+    }
+    
     return parent::beforeDelete();
   }
-
+  
   /**
    * @return array validation rules for model attributes.
    */

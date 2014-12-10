@@ -35,12 +35,12 @@ h1 {
 </style>
 <div class="row-fluid">
   <?php
-    if ($response){
-      $eid = intval($response);
-      if ($eid){
-        Yii::app()->user->setFlash('info', '<a href="'.$model->NewsUrl.'">Завантажено на сайт з ID = '.$model->ExternalID.'</a>');
+    if ($model->ExternalID && strlen($model->NewsUrl) > 0){
+        Yii::app()->user->setFlash('info', '<a href="'.$model->NewsUrl.'">Також є на сайті ЗНУ.</a>');
       } else {
-        Yii::app()->user->setFlash('info', $response);
+	if ($response){
+	  Yii::app()->user->setFlash('info', $response);
+        }
       }
       $this->widget('bootstrap.widgets.TbAlert', array(
         'fade'=>true, // use transitions?
@@ -54,7 +54,6 @@ h1 {
           'class' => 'span12 alert_info',
         )
       )); 
-    }
   ?>  
 </div>
 <?php
@@ -161,7 +160,24 @@ $this->widget('bootstrap.widgets.TbButton',array(
     </div>
     
     <div class="row-fluid">
-      <div class="span4"></div>
+      <div class="span4">
+        <div class="row-fluid">
+          <div class="span12 dfheader">
+            Прикріплений файл
+          </div>
+        </div>
+        <div class="row-fluid">
+          <div class="span12 dfbox">
+          <?php
+	    if ($model->FileID){
+	      echo CHtml::link("[завантажити]",Yii::app()->CreateUrl('events/attachment',array('id' => $model->idEvent)));
+            } else {
+	      echo "Відсутній";
+            }
+          ?>
+          </div>
+        </div>
+      </div>
       <div class="span4">
         <div class="row-fluid">
           <div class="span12 dfheader">
