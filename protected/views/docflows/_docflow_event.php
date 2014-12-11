@@ -21,20 +21,20 @@
           $time_to_event = strtotime($event->eventDates[$i]->EventDate.' '.$event->StartTime) -
             strtotime(date('Y-m-d H:i:s'));
         }
+        echo $datetime_rule;
         ?>
         </span>
-        <div class="dfminicontent">
         <?php
-          echo $datetime_rule
-          . (($time_to_event < 0)?
-          ' (подія вже відбулась)'
+          echo (($time_to_event < 0)?
+          '<div class="dfminicontenthead"> (подія вже відбулась) </div>'
             :
-          ' (залишилось' . ((count($event->eventDates) > 1)? ' до найближчої події':'') 
-            . ' днів: ' . floor($time_to_event / (24.0*3600.0)) 
-            . ', годин: ' . floor($time_to_event / (3600.0)) % 24 
-          .')');
+          ' <div class="dfminicontenthead"> залишилось' . ((count($event->eventDates) > 1)? 
+	      ' до найближчої події':'') . '</div>' 
+            . '<div class="dfminicontent"> днів: ' . (floor($time_to_event / (24.0*3600.0)))
+            . ', годин: ' . (floor($time_to_event / (3600.0)) % 24)
+            . '</div>'
+	  );
         ?>
-        </div>
       </div>
       <div class="row-fluid">
         <span class="dfminicontenthead">Місце проведення: </span>

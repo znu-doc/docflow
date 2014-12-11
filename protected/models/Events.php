@@ -44,6 +44,9 @@ class Events extends CActiveRecord
      "сб" => "щосуботи",
   );
   public $attachment;
+  public $send_to_site = true;
+  public $create_docflow = true;
+  
   /**
    * Returns the static model of the specified AR class.
    * @param string $className active record class name.
@@ -83,6 +86,7 @@ class Events extends CActiveRecord
         foreach ($evdts as $item) {
             $this->event_dates[] = $item->EventDate;
         }
+        asort($this->event_dates,SORT_STRING);
         return parent::afterFind();
     }
 
@@ -112,9 +116,10 @@ class Events extends CActiveRecord
         }
         $res = Eventdates::model()->deleteAll("`EventID` = ".intval($this->idEvent));
         if (!empty($this->event_dates) && is_array($this->event_dates)) {
-            foreach ($this->event_dates as $val) {
+	    asort($this->event_dates,SORT_STRING);
+            for ($i = 0; $i < count($this->event_dates); $i++) {
                 $item = new Eventdates();
-                $item->EventDate = $val;
+                $item->EventDate = $this->event_dates[$i];
                 $item->EventID = $this->idEvent;
                 $item->save();
             }
@@ -239,6 +244,8 @@ class Events extends CActiveRecord
     'ExternalID' => 'Ідентифікатор новини на сайті',
     'StartTime' => 'Час початку',
     'FinishTime' => 'Час завершення',
+    'send_to_site' => 'Також відобразити на сайті ЗНУ',
+    'create_docflow' => 'Розіслати запрошеним через документообіг',
     );
   }
 

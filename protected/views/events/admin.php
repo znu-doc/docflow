@@ -55,7 +55,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
           .'|| strpos($data->event->EventName,">") ===false))? '
           .'htmlspecialchars($data->event->EventName) : $data->event->EventName,'
           .'Yii::app()->CreateUrl("events/index",array("id"=>$data->event->idEvent)))'
-          .'.CHtml::link("<i class=\'icon-share\'></i>",$data->event->NewsUrl)',
+          .'.(($data->event->NewsUrl)?CHtml::link("<i class=\'icon-share\'></i>",$data->event->NewsUrl):"")',
         'type' => 'raw'
       ),
       array(
@@ -90,8 +90,8 @@ $this->widget('bootstrap.widgets.TbGridView', array(
       array(
         'class'=>'bootstrap.widgets.TbButtonColumn',
         'template' => (Yii::app()->user->checkAccess('showProperties') || Yii::app()->user->checkAccess('asEvent')) ? 
-          '{update} {delete}' : '',
-        'deleteButtonUrl' => 'Yii::app()->CreateUrl("events/eventdatedelete",array("id"=>$data->idEventDate))',
+          '{update}' : '',
+        //'deleteButtonUrl' => 'Yii::app()->CreateUrl("events/eventdatedelete",array("id"=>$data->idEventDate))',
         'updateButtonUrl' => 'Yii::app()->CreateUrl("events/update",array("id"=>$data->EventID))'
         //'filter' => '',
       ),

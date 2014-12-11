@@ -128,7 +128,7 @@ class FilesController extends Controller {
     $file_entity = $path . $model->FileLocation;
     //розширення файлу
     $ext = pathinfo($file_entity, PATHINFO_EXTENSION);
-    $valid_name = $model->idFile . time();
+    $valid_name = $model->FileName;
     //отримання зв'язку між файлом як версією документа і документом
     if (!empty($model->documentfiles)){
       $df = $model->documentfiles[0];
@@ -139,7 +139,7 @@ class FilesController extends Controller {
       }
       //заміна усих "негарних" символів для формування імені файлу
       $valid_name = preg_replace('/[\s]|[\/]|[\\]|[<]|[>]|[\?]|[\}]|[\{]|[\[]|[\]]|[\@]|[\"]|[\']/', 
-              '_', $desc);
+              '_', $desc) . '.' . $ext;
     }
     if (!is_file($file_entity)) {
       throw new CHttpException(404, 'Помилка: файл ' .
@@ -148,7 +148,7 @@ class FilesController extends Controller {
     }
     $mime = NULL;
     if (!strcasecmp($ext,'pdf')){
-      $fname = $valid_name . '.' . $ext;
+      $fname = $valid_name;
       if(($mimeType=CFileHelper::getMimeTypeByExtension($file_entity))===null)
               $mimeType='text/plain';
       header('Pragma: public');
@@ -166,7 +166,7 @@ class FilesController extends Controller {
       exit(0);
 
     }
-    return Yii::app()->getRequest()->sendFile($valid_name . '.' . $ext, file_get_contents($file_entity), $mime);
+    return Yii::app()->getRequest()->sendFile($valid_name, file_get_contents($file_entity), $mime);
   }
 
   /**

@@ -323,7 +323,7 @@
             </div>
           </div>
           <div class="span6">
-            <div class="dfheader">Обрані</div>
+            <div class="dfheader">Обрані (в полях можна вказати кількість)</div>
             <div id = "_AddedItemsArea">
             <?php 
             $vals = $model->getInvited();
@@ -407,7 +407,7 @@
       </div>
     </div>
     <hr/>
-    <div class='row-fluid' style="text-align: center;">
+    <div class='row-fluid'>
       <div class="span6">
 	<?php
 	if (!$model->FileID){
@@ -430,6 +430,12 @@
 	}
 	echo $eventscreate_form->fileField($model,"attachment");
 	?>
+      </div>
+      <div class="span6">
+      <?php
+	echo $eventscreate_form->checkboxRow($model,'send_to_site');
+	echo $eventscreate_form->checkboxRow($model,'create_docflow');
+      ?>
       </div>
     </div>
     <div class='row-fluid' style="text-align: center;">

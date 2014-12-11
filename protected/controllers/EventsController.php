@@ -40,12 +40,12 @@ class EventsController extends Controller {
         ),
         array('allow', //
             'actions' => array('create', 
-              'xupdate', 'update'),
+              'xupdate', 'update', 'attachmentrm'),
             'roles' => array('Event'),
         ),
         array('allow', //
-            'actions' => array('eventdatedelete', 'delete','attachmentrm'),
-            'roles' => array('Event'),
+            'actions' => array('eventdatedelete', 'delete'),
+            'roles' => array('EventAdmin'),
         ),
         array('allow', //
             'actions' => array('index','admin','attachment'),
@@ -80,6 +80,10 @@ class EventsController extends Controller {
   
   public function actionUpdate($id){
     $model = $this->loadModel($id);
+    if (Yii::app()->user->id != $model->UserID){
+        throw new CHttpException(403, 
+          'Недостатньо прав для редагування цього заходу.');
+    }
     $nmodel = $this->commonSave($model);
     $this->render('update', array(
         'model' => $nmodel,
@@ -112,57 +116,44 @@ class EventsController extends Controller {
         throw new CHttpException(400, 
           'Помилка збереження заходу : невірно вказана дата');
       }
-      $att = CUploadedFile::getInstance($model, 'attachment');
-      if ( $att !== null){
-	$file = new Files();
-	$username = trim(Yii::app()->user->name);
-	$md5_name = md5_file($att->getTempName());
-	$ext = $att->extensionName;
-	$new_filename = $file->folder.$username.DIRECTORY_SEPARATOR.$md5_name.'.'.$ext;
-	$folder = $file->folder.$username;
-	if (!is_dir($folder)){
-	  mkdir($folder);
-	}
-	$file->FileName = $att->getTempName();
-	if (!is_dir($folder) || ($att->saveAs($new_filename) !== true)){
-	  throw new CHttpException(400, 
-	    'Помилка збереження заходу : не вдалось зберегти прикріплений файл ^ ' . $att->getTempName());
-	}
-	$file->FileLocation = $username.DIRECTORY_SEPARATOR.$md5_name.'.'.$ext;
-	$file->UserID = Yii::app()->user->id;
-	$file->FileVisibility = 1;
-	$file->file_itself = $att;
-	$new_quota_size = $this->RecountUserQuota(Yii::app()->user->id, 
-		-($att->size) / (1024.0 * 1024.0));
-	if (!$file->save()){
-	  throw new CHttpException(400, 
-	    'Помилка збереження заходу : не вдалось зберегти прикріплений файл.');
-	}
-	if ($model->FileID > 0){
-	  $model->attfile->delete();
-	}
-	$model->FileID = $file->idFile;
-      }
+      $model = $this->saveAttachment($model);
       $model->UserID = Yii::app()->user->id;
       if ($model->save()){
-        $resp = 'Не вдалося оновити на сайті ЗНУ';
-        $response = $this->SendToService($model);
-        //var_dump($response);exit();
-        $decoded_response = json_decode($response);
-
-        if (isset($decoded_response->calendar)){
-          $resp = $decoded_response->calendar->id;
-          $model->ExternalID = $decoded_response->calendar->id;
-          $model->NewsUrl = 
-          str_replace('{year}', date("Y",strtotime($model->event_dates[0])), 
-            str_replace('{month}', date("m",strtotime($model->event_dates[0])),
-              str_replace('{day}', date("d",strtotime($model->event_dates[0])),
-                $decoded_response->calendar->url)));
-          $model->save();
+	$model->send_to_site = isset($Events['send_to_site'])? 
+	  $Events['send_to_site']:false;
+	$model->create_docflow = isset($Events['create_docflow'])? 
+	  $Events['create_docflow']:false;
+        $resp = 'success';
+	$this->genDocFlow($model);
+	if ($model->send_to_site){
+	  $response = $this->SendToService($model);
+	  //var_dump($response);exit();
+	  $decoded_response = json_decode($response);
+	  if ((!isset($decoded_response->calendar))?
+	    true :
+	    !isset($decoded_response->calendar->id)
+	  ){
+	    $resp = 'Сталася помилка з інформацією: '.$response;
+	    $model->ExternalID = null;
+	    $model->NewsUrl = null;
+	    $model->save();
+	    $this->redirect(Yii::app()->CreateUrl('events/index',array(
+	      'id' => $model->idEvent,
+	      'response' => $resp)));
+	  }
+	  $model->ExternalID = $decoded_response->calendar->id;
+	  $model->NewsUrl = 
+	  str_replace('{year}', date("Y",strtotime($model->event_dates[0])), 
+	    str_replace('{month}', date("m",strtotime($model->event_dates[0])),
+	      str_replace('{day}', date("d",strtotime($model->event_dates[0])),
+		$decoded_response->calendar->url)));
+	  $model->save();
+	  $this->redirect(Yii::app()->CreateUrl('events/index',array(
+	    'id' => $model->idEvent,
+	    'response' => $resp)));
         }
-        $this->redirect(Yii::app()->CreateUrl('events/index',array('id' => $model->idEvent,
-           'response' => $resp)));
       }
+      $this->redirect(Yii::app()->CreateUrl('events/index',array('id' => $model->idEvent)));
     }
     return $model;
   }
@@ -251,7 +242,7 @@ class EventsController extends Controller {
       $model->FileID = null;
       $model->save();
     }
-    $this->redirect(Yii::app()->CreateUrl("events/index",array('id' => $model->idEvent)));
+    $this->redirect(Yii::app()->CreateUrl("events/update",array('id' => $model->idEvent)));
   }
 
   /**
@@ -278,6 +269,83 @@ class EventsController extends Controller {
   }
   
   /**
+   * Збереження або заміна прикріпленого файлу
+   * @param Events $model
+   */
+  protected function saveAttachment($model){
+    $att = CUploadedFile::getInstance($model, 'attachment');
+    if ( $att !== null){
+      $file = new Files();
+      $username = trim(Yii::app()->user->name);
+      $md5_name = md5_file($att->getTempName());
+      $ext = $att->extensionName;
+      $new_filename = $file->folder.$username.DIRECTORY_SEPARATOR.$md5_name.'.'.$ext;
+      $folder = $file->folder.$username;
+      if (!is_dir($folder)){
+	mkdir($folder);
+      }
+      $file->FileName = $att->name;
+      if (!is_dir($folder) || ($att->saveAs($new_filename) !== true)){
+	throw new CHttpException(400, 
+	  'Помилка збереження заходу : не вдалось зберегти прикріплений файл ^ ' . $att->name);
+      }
+      $file->FileLocation = $username.DIRECTORY_SEPARATOR.$md5_name.'.'.$ext;
+      $file->UserID = Yii::app()->user->id;
+      $file->FileVisibility = 1;
+      $file->file_itself = $att;
+      $new_quota_size = $this->RecountUserQuota(Yii::app()->user->id, 
+	      -($att->size) / (1024.0 * 1024.0));
+      if (!$file->save()){
+	throw new CHttpException(400, 
+	  'Помилка збереження заходу : не вдалось зберегти прикріплений файл.');
+      }
+      if ($model->FileID > 0){
+	$model->attfile->delete();
+      }
+      $model->FileID = $file->idFile;
+    }
+    return $model;
+  }
+  
+  /**
+   * Створення розсилки запрошеним підрозділам
+   * @param Events $model
+   */
+  protected function genDocFlow($model){
+    if (!$model->create_docflow || empty($model->invited_ids)){
+      return false;
+    }
+    $old_docflowevents = Docflowevents::model()->findAllByAttributes(
+      array('EventID' => $model->idEvent)
+    );
+    if (count($old_docflowevents) > 0){
+      $old_docflowevents[0]->docFlow->delete();
+    }
+    $docflow = new Docflows();
+    $docflow->DocFlowName = $model->EventName;
+    $docflow->DocFlowDescription = $model->EventDescription;
+    $docflow->ExpirationDate = $model->eventDates[0]->EventDate;
+    $docflow->DocFlowStatusID = 1;
+    $docflow->Created =  date('Y-m-d H:i:s');
+    $docflow->Finished = null;
+    $docflow->DocFlowGroupID = $this->getDocFlowGroupID($model->invited_ids,"група розсилки заходу #".$model->EventName."#");
+    $docflow->DocFlowTypeID = 3;
+    if (!$docflow->save()){
+	throw new CHttpException(400, 
+	  'Помилка збереження розсилки.');
+    }
+    $docflowevent = new Docflowevents();
+    $docflowevent->DocFlowID = $docflow->idDocFlow;
+    $docflowevent->EventID = $model->idEvent;
+     if (!$docflowevent->save()){
+	$docflow->delete();
+	throw new CHttpException(400, 
+	  'Помилка збереження розсилки.');
+    }
+    return true;
+  }
+  
+  /**
    * Відправлення даних на веб-сервіс через CURL POST-запитом
    * @param Events $model
    */
@@ -285,8 +353,8 @@ class EventsController extends Controller {
     $response = false;
     $date_intervals = array();
     // підключення
-    //$url = "http://sites.znu.edu.ua/cms/index.php";
-    $url = "http://10.1.22.8/cms/index.php"; //test-service
+    $url = "http://sites.znu.edu.ua/cms/index.php";
+    //$url = "http://10.1.22.8/cms/index.php"; //test-service
     $ch = curl_init($url);
     $invited = "";
     $organizers = "";
@@ -339,11 +407,11 @@ class EventsController extends Controller {
     }
     // дані для відправки
     $data = array(
-      //'api_key' => 'dksjf;aj;weio[wlooiuoiuhlk;lk\'',
-      'api_key' => '1234567',//test service
+      'api_key' => 'dksjf;aj;weio[wlooiuoiuhlk;lk\'',
+      //'api_key' => '1234567',//test service
       'action' => 'calendar/api/'.(($model->ExternalID)? 'update':'create'),
       'lang' => 'ukr',
-      'site_id' => 62,//89,//62,
+      'site_id' => 89,//62,
       'nazva' => $model->EventName,
       'vis' => 1,
       'categories' => implode(',',
@@ -360,7 +428,7 @@ class EventsController extends Controller {
             "не вказано":$model->EventPlace) . '</div>'
         . '<div class="DateTimeHeader">Дата і час: </div> '
         . '<div class="DateTime">'.$date_time . '</div>'
-        . '<div class="EventDescription">'.$model->EventDescription . '<div/>'
+        . '<div class="EventDescription">'.$model->EventDescription . '</div>'
         . '<div class="InvitedHeader">Запрошені: </div>'
         . '<div class="InvitedList">'.((empty($invited))? "не вказано":$invited).'</div>'
         . '<div class="OrganizersHeader">Організатори: </div>'
@@ -377,6 +445,7 @@ class EventsController extends Controller {
     if ($model->ExternalID > 0){
       $data['id'] = $model->ExternalID;
     }
+    //var_dump($data);exit();
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
     // треба отримати результат
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -386,7 +455,7 @@ class EventsController extends Controller {
     //$err     = curl_errno( $ch );
     //$header  = curl_getinfo( $ch );
     // закрити з_єднання
-    //curl_close($ch);
+    curl_close($ch);
     return $response;
   }
   

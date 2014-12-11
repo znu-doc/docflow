@@ -34,6 +34,7 @@ h1 {
 }
 </style>
 <div class="row-fluid">
+  <div class="row-fluid">
   <?php
     if ($model->ExternalID && strlen($model->NewsUrl) > 0){
         Yii::app()->user->setFlash('info', '<a href="'.$model->NewsUrl.'">Також є на сайті ЗНУ.</a>');
@@ -42,6 +43,7 @@ h1 {
 	  Yii::app()->user->setFlash('info', $response);
         }
       }
+    if ($model->ExternalID && strlen($model->NewsUrl) > 0 || $response){
       $this->widget('bootstrap.widgets.TbAlert', array(
         'fade'=>true, // use transitions?
         'block'=>true,
@@ -54,7 +56,31 @@ h1 {
           'class' => 'span12 alert_info',
         )
       )); 
-  ?>  
+    }
+    ?>
+  </div>
+  <div class="row-fluid">
+    <?php
+    if (($eflows = Docflowevents::model()->findAll('EventID='.$model->idEvent)) &&
+      Yii::app()->user->id == $model->UserID){
+        Yii::app()->user->setFlash('success', '<a href="'
+	  .Yii::app()->CreateUrl('docflows/index',array('id' => $eflows[0]->DocFlowID))
+	  .'">Розсилка запрошеним через документообіг.</a>');
+	$this->widget('bootstrap.widgets.TbAlert', array(
+	  'fade'=>true, // use transitions?
+	  'block'=>true,
+	  'closeText'=>'&times;', // close link text - if set to false, no close link is displayed
+	  'alerts'=>array( // configurations per alert type
+	      'success'=>array('block'=>true, 'fade'=>true, 'closeText'=>'&times;'), 
+	      // success, info, warning, error or danger
+	  ),
+	  'htmlOptions' => array(
+	    'class' => 'span12 alert_info',
+	  )
+	));
+      } 
+  ?>
+  </div>
 </div>
 <?php
 if (Yii::app()->user->checkAccess('showProperties') || Yii::app()->user->checkAccess('asEvent')){
@@ -85,15 +111,18 @@ $this->widget('bootstrap.widgets.TbButton',array(
 &bullet;
 &bullet;
 <?php
-
+if (Yii::app()->user->checkAccess('showProperties') || Yii::app()->user->checkAccess('asEvent')){
 $this->widget('bootstrap.widgets.TbButton',array(
   'size' => 'mini',
   'type' => 'danger',
   'url' => Yii::app()->CreateUrl('events/delete',array('id' => $model->idEvent)),
   'label' => 'Видалити',
-  'icon' => 'trash white'
+  'icon' => 'trash white',
+  'htmlOptions' => array(
+    'onclick' => 'if(!confirm("Остаточно?")){return false;}'
+  )
 ));
-
+}
 ?>
 <div class='row-fluid'>
   <div class="span12 dfbox">
