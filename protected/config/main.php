@@ -199,11 +199,6 @@ return array(
    'params' => array(
       // this is used in contact page
       'adminEmail' => '',
-      'docPath' => dirname(__FILE__) . DIRECTORY_SEPARATOR 
-         . '..' . DIRECTORY_SEPARATOR 
-         . '..' . DIRECTORY_SEPARATOR 
-         . '..' . DIRECTORY_SEPARATOR 
-         . 'docflow' . DIRECTORY_SEPARATOR 
-         . 'docs' . DIRECTORY_SEPARATOR ,
+      'docPath' => 'home/sysadmin/docs/' ,
    ),
 );

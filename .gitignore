@@ -10,3 +10,4 @@ docs/
 !/protected/extensions/bootstrap/assets/js/ckeditor/plugins/uicolor/yui/assets/
 !/protected/extensions/bootstrap/assets/js/ckeditor/plugins/imagepaste/docs/
 !/protected/extensions/yiichat/assets/
+/protected/config/main.php
