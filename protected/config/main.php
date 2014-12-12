@@ -2,8 +2,8 @@
 
 // uncomment the following to define a path alias
 // Yii::setPathOfAlias('local','path/to/local-folder');
-Yii::setPathOfAlias('bootstrap', dirname(__FILE__) . '/../extensions/bootstrap');
-Yii::setPathOfAlias('editable', dirname(__FILE__).'/../extensions/x-editable');
+Yii::setPathOfAlias('bootstrap', '/home/sysadmin/www/framework/extensions/bootstrap');
+Yii::setPathOfAlias('editable', '/home/sysadmin/www/framework/extensions/x-editable');
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
 return array(
@@ -24,7 +24,7 @@ return array(
       'ext.EHttpClient.adapter.*',
       'ext.EWideImage.EWideImage',
       'editable.*', //easy include of editable classes
-      'application.extensions.yiichat.*',
+      'ext.yiichat.*',
    ),
    'modules' => array(
       // uncomment the following to enable the Gii tool
@@ -199,6 +199,6 @@ return array(
    'params' => array(
       // this is used in contact page
       'adminEmail' => '',
-      'docPath' => 'home/sysadmin/docs/' ,
+      'docPath' => '/home/sysadmin/docs/' ,
    ),
 );
