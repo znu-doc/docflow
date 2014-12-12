@@ -48,7 +48,7 @@ class EventsController extends Controller {
             'roles' => array('EventAdmin'),
         ),
         array('allow', //
-            'actions' => array('index','admin','attachment'),
+            'actions' => array('index','admin','attachment','ajaxcounters'),
             'users' => array('@'),
         ),
         array('deny', // deny all users
@@ -212,6 +212,11 @@ class EventsController extends Controller {
       } else {
         $model->past = 0;
       }
+      if (isset($_GET['Events']['date_search'])){
+        $model->date_search = $_GET['Events']['date_search'];
+      } else {
+        $model->date_search = '';
+      }
     }
     $this->render('admin', array(
         'model' => $model,
@@ -243,6 +248,18 @@ class EventsController extends Controller {
       $model->save();
     }
     $this->redirect(Yii::app()->CreateUrl("events/update",array('id' => $model->idEvent)));
+  }
+  
+  public function actionAjaxcounters(){
+    $_date1 = Yii::app()->request->getParam('date1',date('Y-m-01'));
+    $_date2 = Yii::app()->request->getParam('date2',date('Y-m-01',strtotime("next month")));
+    $date1 = date("Y-m-d",strtotime($_date1));
+    $date2 = date("Y-m-d",strtotime($_date2));
+    $list= Yii::app()->db->createCommand('select count(EventID) as cnt,EventDate '
+    .'from eventdates '
+    .'where EventDate between "'.$date1.'" and "'.$date2.'"'
+    .'group by EventDate order by EventDate ASC')->queryAll();
+    echo CJSON::encode($list);
   }
 
   /**

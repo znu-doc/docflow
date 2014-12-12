@@ -81,28 +81,30 @@ class Eventdates extends CActiveRecord
     $criteria->select = array('*',
       'CONCAT(EventDate," ",'
         . 'IF(ISNULL(event.StartTime),"08:00:00",event.StartTime)) as EventFullTime',
-      (($event->past)? $event->past: '0') .' as past',
+      ((!is_string($event->date_search) || $event->date_search === "")? 
+	(($event->past)? $event->past: '0') : '-1') .' as past',
     );
     $criteria->together = true;
     $criteria->group = 'idEventDate';
     
     $criteria->compare('idEventDate',$this->idEventDate);
     $criteria->compare('EventID',$this->EventID);
-    $criteria->compare('EventDate',$this->EventDate,true);
-    
-    if ($event->past == 0){
-      $criteria->addCondition('NOW() < CONCAT(EventDate," ",'
-        . 'IF(ISNULL(event.StartTime),"08:00:00",event.StartTime))');
-    } 
-    if ($event->past == 1){
-      $criteria->addCondition('NOW() >= CONCAT(EventDate," ",'
-        . 'IF(ISNULL(event.FinishTime),"17:00:00",event.FinishTime))');
-    }
-    if ($event->past == 2){
-      $criteria->addCondition('NOW() < CONCAT(EventDate," ",'
-        . 'IF(ISNULL(event.FinishTime),"17:00:00",event.FinishTime))');
-      $criteria->addCondition('NOW() >= CONCAT(EventDate," ",'
-        . 'IF(ISNULL(event.StartTime),"08:00:00",event.StartTime))');
+    $criteria->compare('EventDate',$event->date_search,true);
+    if (!is_string($event->date_search) || $event->date_search === ""){
+      if ($event->past == 0 ){
+	$criteria->addCondition('NOW() < CONCAT(EventDate," ",'
+	  . 'IF(ISNULL(event.StartTime),"08:00:00",event.StartTime))');
+      } 
+      if ($event->past == 1){
+	$criteria->addCondition('NOW() >= CONCAT(EventDate," ",'
+	  . 'IF(ISNULL(event.FinishTime),"17:00:00",event.FinishTime))');
+      }
+      if ($event->past == 2){
+	$criteria->addCondition('NOW() < CONCAT(EventDate," ",'
+	  . 'IF(ISNULL(event.FinishTime),"17:00:00",event.FinishTime))');
+	$criteria->addCondition('NOW() >= CONCAT(EventDate," ",'
+	  . 'IF(ISNULL(event.StartTime),"08:00:00",event.StartTime))');
+      }
     }
     $criteria->compare('event.idEvent',$event->idEvent);
     $criteria->compare('event.EventName',$event->EventName,true);

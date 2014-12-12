@@ -18,8 +18,10 @@
       'calendar_msg_block',
       cur.getMonth()+1,
       cur.getFullYear(),
-      6
+      2,
+      "<?php echo Yii::app()->CreateUrl("events/ajaxcounters"); ?>"
     );
+
     
     $("#Events_StartTime").keyup(function(){
       var str = $(this).val();
@@ -474,3 +476,9 @@
 <?php 
   $this->endWidget();
 ?>
+
+<!--div class="badge badge-info">1</div>
+<div class="badge badge-warning">1</div>
+<div class="badge badge-important">1</div>
+<div class="badge badge-inverse">1</div>
+<div class="badge badge-red">1</div-->

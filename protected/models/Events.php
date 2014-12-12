@@ -46,6 +46,7 @@ class Events extends CActiveRecord
   public $attachment;
   public $send_to_site = true;
   public $create_docflow = true;
+  public $date_search = true;
   
   /**
    * Returns the static model of the specified AR class.

@@ -1,4 +1,29 @@
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/events.css" />
+<script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/events.js">
+</script>
+<script type="text/javascript" charset="utf-8">
+  $(function(){
+    var cur = new Date();
+     mc = new MultiCalendar(
+      'calendarik_in',
+      'calendarik',
+      'calendarik_out',
+      cur.getMonth()+1,
+      cur.getFullYear(),
+      6,
+      "<?php echo Yii::app()->CreateUrl("events/ajaxcounters"); ?>"
+    );
+   });
+</script>
+<div class="row-fluid" style="text-align: center;">
+  <div class="dfbox span12" id="calendarik">
+  
+  </div>
+  <div style="display:none;" id="calendarik_out">
+    
+  </div>
+  <input type="hidden" id="calendarik_in" />
+</div>
 <?php 
 /* @var $model Events */
 
@@ -13,7 +38,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
       array(
         'header' => '#',
         'name' => 'past',
-        'filter' => array(0 => "буде",1 => "було",2 => "зараз"),
+        'filter' => array(-1 => 'усі', 0 => "буде",1 => "було",2 => "зараз"),
         'headerHtmlOptions' => array(
           'style' => 'font-size: 9pt; width: 50px;'
         ),
@@ -24,6 +49,9 @@ $this->widget('bootstrap.widgets.TbGridView', array(
           'style' => 'width: 50px;'
         ),
         "value" => function ($data){
+          if($data->past == -1){
+            echo "";
+          }
           if($data->past == 0){
             echo "<span class='label label-success'>буде</span>";
           }

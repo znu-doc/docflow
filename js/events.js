@@ -5,11 +5,17 @@
     calendar_msg_block_id,
     start_month,
     start_year,
-    n_months
+    n_months,
+    calendar_url
   ){
     this.n_months = n_months;
     this.$input_field = $('#'+input_field_id);
-    this.input_field_id = input_field_id;
+    if (this.$input_field.length > 0){
+      this.input_field_id = input_field_id;
+    } else {
+      this.input_field_id = null;
+      this.$input_field = null;
+    }
     this.$calendar_block = $('#'+calendar_block_id);
     this.calendar_block_id = calendar_block_id;
     this.$calendar_msg_block = $('#'+calendar_msg_block_id);
@@ -19,6 +25,7 @@
     
     this.m_years = 10;
     this.h_dates = [];
+    this.calendar_url = (typeof(calendar_url) !== undefined)? calendar_url : null;
     
     this._start_date = new Date(this.c_year,this.c_month,1);
     this._end_date = new Date(this.c_year,this.c_month+this.n_months,0,23,59,59);
@@ -128,12 +135,86 @@
     
     this.putCalendar = function(){
       var dts = [];
+      $(".badge.badge-info.counter_circle").remove();
+      if (_self.calendar_url){
+	_self.$calendar_block.append(
+	  "<a href='#' class='icon-backward' id='"+_self.calendar_block_id+"_prev'></a>"
+	);
+	$("#"+_self.calendar_block_id+"_prev").click(function(){
+	  var new_base_date = new Date(_self.c_year,--_self.c_month,1);
+	  _self.c_year = new_base_date.getFullYear();
+	  _self.c_month = new_base_date.getMonth();
+	  _self.$calendar_block.html("");
+	  _self._start_date = new_base_date;
+	  _self._end_date = new Date(_self.c_year,_self.c_month+_self.n_months,0,23,59,59);
+	  _self.putCalendar();
+	  if (_self.$input_field !== null){
+	    _self.$input_field.keyup();
+	  }
+	  return false;
+	});
+      }
       for (var i = 0; i < _self.n_months; i++){
         var d = new Date(_self.c_year,_self.c_month+i,1);
         var p_month = d.getMonth(),
             p_year = d.getFullYear();
         _self.appendMonthCalendarTable(p_month,p_year);
         dts.push({ 'p_month': p_month, 'p_year': p_year});
+      }
+      if (_self.calendar_url){
+	$.ajax({
+	  type: 'GET',
+	  url: _self.calendar_url,
+	  async: true,
+	  cache: false,
+	  data: {
+	    date1: _self._start_date.getFullYear()+'-'
+	      +MultiCalendar.prototype.padDigits((_self._start_date.getMonth()+1),2)
+	      +'-01',
+	    date2: _self._end_date.getFullYear()+'-'
+	      +MultiCalendar.prototype.padDigits((_self._end_date.getMonth()+1),2)+'-'
+	      +MultiCalendar.prototype.padDigits((_self._end_date.getDate()),2)
+	  },
+	  success: function(data){
+	    var receive = JSON.parse(data);
+	    var append_template = '<a href="'+_self.calendar_url+'/../admin?Events[date_search]={EventDate}" '
+	    +'class="badge badge-important counter_circle" '
+	    +'id="'+_self.calendar_block_id+'_{EventDate}_cnt">'
+	    + '{cnt}'
+	    + '</a>';
+	    for (var i = 0; i < receive.length; i++){
+	      var append_block = append_template
+		.replace("{EventDate}",receive[i].EventDate)
+		.replace("{EventDate}",receive[i].EventDate)
+		.replace("{cnt}",receive[i].cnt);
+	      $("#"+_self.calendar_block_id).append(append_block);
+	      $('#'+_self.calendar_block_id+'_'+receive[i].EventDate+'_cnt').offset({
+		top: $("#"+_self.calendar_block_id+"_"+receive[i].EventDate).position().top - 3,
+		left: $("#"+_self.calendar_block_id+"_"+receive[i].EventDate).position().left 
+		  + $("#"+_self.calendar_block_id+"_"+receive[i].EventDate).width()- 2
+		});
+	    }
+	  },
+	  error: function(jXHR,txt){
+	    alert(txt);
+	  }
+	});
+	_self.$calendar_block.append(
+	  "<a href='#' class='icon-forward' id='"+_self.calendar_block_id+"_next'></a>"
+	);
+	$("#"+_self.calendar_block_id+"_next").click(function(){
+	  var new_base_date = new Date(_self.c_year,++_self.c_month,1);
+	  _self.c_year = new_base_date.getFullYear();
+	  _self.c_month = new_base_date.getMonth();
+	  _self._start_date = new_base_date;
+	  _self._end_date = new Date(_self.c_year,_self.c_month+_self.n_months,0,23,59,59);
+	  _self.$calendar_block.html("");
+	  _self.putCalendar();
+	  if (_self.$input_field !== null){
+	    _self.$input_field.keyup();
+	  }
+	  return false;
+	});
       }
       return dts;
     }
@@ -332,44 +413,49 @@
       return counters;
     }
     
-    this.$input_field.keyup(function(){
-      var counters = _self.hightLightDates($(this).val());
-      var $msg_node = _self.$calendar_msg_block;
-      if ($msg_node.length){
-        $msg_node.html("");
-      }
-      if (counters[0] == -1){
-        $msg_node.append("<div class='msg_val'>занадто великий інтервал</div>");
-        $(this).css('border-color','rgb(255,0,0)');
-        return ;
-      }
-      for (var i = 0; (i < _self.h_dates.length && $msg_node.length); i++){
-        if (i === 0){
-          $msg_node.append("<div class='msg_val'>Обрані дати:</div>");
-          $msg_node.append(""
-            +MultiCalendar.prototype.padDigits(_self.h_dates[i].getDate(),2)+'.'
-            +MultiCalendar.prototype.padDigits((_self.h_dates[i].getMonth()+1),2)+'.'
-            +(_self.h_dates[i].getFullYear()));
-        } else {
-          $msg_node.append(""+", "
-            +MultiCalendar.prototype.padDigits(_self.h_dates[i].getDate(),2)+'.'
-            +MultiCalendar.prototype.padDigits((_self.h_dates[i].getMonth()+1),2)+'.'
-            +(_self.h_dates[i].getFullYear()));
-        }
-      }
-      if (_self.counters[0] > 0 && _self.counters[1] === 0){
-        $(this).css('border-color','rgb(255,225,0)');
-      }
-      if (_self.counters[0] > 0 && _self.counters[1] > 0){
-        $(this).css('border-color','rgb(0,225,0)');
-      }
-      if (_self.counters[0] === 0){
-        $(this).css('border-color','rgb(255,0,0)');
-      }
-    });
+    if (_self.input_field_id !== null){
+      this.$input_field.keyup(function(){
+	var counters = _self.hightLightDates($(this).val());
+	var $msg_node = _self.$calendar_msg_block;
+	if ($msg_node.length){
+	  $msg_node.html("");
+	}
+	if (counters[0] == -1){
+	  $msg_node.append("<div class='msg_val'>занадто великий інтервал</div>");
+	  $(this).css('border-color','rgb(255,0,0)');
+	  return ;
+	}
+	for (var i = 0; (i < _self.h_dates.length && $msg_node.length); i++){
+	  if (i === 0){
+	    $msg_node.append("<div class='msg_val'>Обрані дати:</div>");
+	    $msg_node.append(""
+	      +MultiCalendar.prototype.padDigits(_self.h_dates[i].getDate(),2)+'.'
+	      +MultiCalendar.prototype.padDigits((_self.h_dates[i].getMonth()+1),2)+'.'
+	      +(_self.h_dates[i].getFullYear()));
+	  } else {
+	    $msg_node.append(""+", "
+	      +MultiCalendar.prototype.padDigits(_self.h_dates[i].getDate(),2)+'.'
+	      +MultiCalendar.prototype.padDigits((_self.h_dates[i].getMonth()+1),2)+'.'
+	      +(_self.h_dates[i].getFullYear()));
+	  }
+	}
+	if (_self.counters[0] > 0 && _self.counters[1] === 0){
+	  $(this).css('border-color','rgb(255,225,0)');
+	}
+	if (_self.counters[0] > 0 && _self.counters[1] > 0){
+	  $(this).css('border-color','rgb(0,225,0)');
+	}
+	if (_self.counters[0] === 0){
+	  $(this).css('border-color','rgb(255,0,0)');
+	}
+      });
+    }
+    
     
     _self.putCalendar();
-    _self.$input_field.keyup();
+    if (_self.$input_field !== null){
+      _self.$input_field.keyup();
+    }
     
   };
   

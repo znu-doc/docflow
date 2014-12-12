@@ -116,3 +116,14 @@ span.CtrId{
 .CtrSubBullet {
   color: rgb(0,0,255) !important;
 }
+.counter_circle{
+  height: 12px !important; 
+  width: 12px !important;
+  padding: 0px !important;
+  position: absolute !important; 
+  display: block !important;
+  text-align: center !important;
+  font-family: Courier New !important;
+  color: white !important;
+  font-size: 6pt !important;
+}
