@@ -80,9 +80,8 @@ class EventsController extends Controller {
   
   public function actionUpdate($id){
     $model = $this->loadModel($id);
-    if (Yii::app()->user->id != $model->UserID){
-        throw new CHttpException(403, 
-          'Недостатньо прав для редагування цього заходу.');
+    if (!Yii::app()->user->checkAccess('showProperties')){
+      $this->CheckDeptAccess($model->UserID,true);
     }
     $nmodel = $this->commonSave($model);
     $this->render('update', array(

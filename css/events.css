@@ -121,9 +121,15 @@ span.CtrId{
   width: 12px !important;
   padding: 0px !important;
   position: absolute !important; 
-  display: block !important;
+  display: inline-block !important;
   text-align: center !important;
-  font-family: Courier New !important;
+  font-family: Verdana !important;
+  /* font-weight: normal !important; */
   color: white !important;
-  font-size: 6pt !important;
+  font-size: 7pt !important;
+  float: left !important;
+  margin-left: -4px;
+  margin-top: -3px;
+  background-color: rgba(255,255,0,0.5) !important;
+  color: black !important;
 }

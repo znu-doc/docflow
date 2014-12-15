@@ -111,7 +111,10 @@ $this->widget('bootstrap.widgets.TbButton',array(
 &bullet;
 &bullet;
 <?php
-if (Yii::app()->user->checkAccess('showProperties') || Yii::app()->user->checkAccess('asEvent')){
+if (Yii::app()->user->checkAccess('showProperties') || (
+  in_array('EventAdmin',User::model()->findByPk(Yii::app()->user->id)->getRoles())
+  && $this->CheckDeptAccess($model->UserID,false)
+)){
 $this->widget('bootstrap.widgets.TbButton',array(
   'size' => 'mini',
   'type' => 'danger',

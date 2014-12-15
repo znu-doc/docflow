@@ -116,12 +116,15 @@ $this->widget('bootstrap.widgets.TbGridView', array(
         'type' => 'raw',
       ),
       array(
-        'class'=>'bootstrap.widgets.TbButtonColumn',
-        'template' => (Yii::app()->user->checkAccess('showProperties') || Yii::app()->user->checkAccess('asEvent')) ? 
-          '{update}' : '',
+        'header'=>'дії',
         //'deleteButtonUrl' => 'Yii::app()->CreateUrl("events/eventdatedelete",array("id"=>$data->idEventDate))',
-        'updateButtonUrl' => 'Yii::app()->CreateUrl("events/update",array("id"=>$data->EventID))'
-        //'filter' => '',
+        'value' => function ($data){
+          if (Yii::app()->user->checkAccess('showProperties') || (Yii::app()->user->checkAccess('asEvent')) &&
+            $this->CheckDeptAccess($data->event->UserID,false)){
+            echo CHtml::link('<i class="icon-pencil"></i>',Yii::app()->CreateUrl("events/update",array("id"=>$data->EventID)));
+          }
+        },
+        'filter' => '',
       ),
     ),
   )

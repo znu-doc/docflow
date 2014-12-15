@@ -137,4 +137,17 @@ class User extends CActiveRecord {
       }
       return $dept_ids;
   }
+  
+  public function getRoles(){
+        $roles = Yii::app()->db->createCommand()
+                ->select('itemname')
+                ->from('sys_roleassignments')
+                ->where('userid=:id', array(':id'=>$this->id))
+                ->queryAll();
+        $ret = array();
+        foreach ($roles as $rl){
+          $ret[] = $rl['itemname'];
+        }
+        return $ret;
+  }
 }
