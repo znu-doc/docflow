@@ -128,6 +128,26 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 ); 
 
 ?>
+<div class="row-fluid" >
+<div class="dfbox span12">
+Види заходів:
+<?php
+foreach (Eventkinds::model()->findAll() as $ek){
+  echo '&bullet;<span class="label label-'.$ek->EventKindStyle.'">'.$ek->EventKindName.'</span>&bullet;';
+}
+?>
+</div>
+</div>
+<div class="row-fluid">
+<div class="dfbox span12">
+Рівні заходів:
+<?php
+foreach (Eventtypes::model()->findAll() as $et){
+  echo '&bullet;<span class="label label-'.$et->EventTypeStyle.'">'.$et->EventTypeName.'</span>&bullet;';
+}
+?>
+</div>
+</div>
 <script>
 $('.datepicker').datepicker({format: "dd.mm.yyyy", weekStart: 1});
 </script>
