@@ -26,7 +26,7 @@
 </div>
 <?php 
 /* @var $model Events */
-
+$controller = $this;
 $this->widget('bootstrap.widgets.TbGridView', array(
     'id'=>'events-grid',
     'dataProvider'=>$model->search(),
@@ -118,9 +118,9 @@ $this->widget('bootstrap.widgets.TbGridView', array(
       array(
         'header'=>'дії',
         //'deleteButtonUrl' => 'Yii::app()->CreateUrl("events/eventdatedelete",array("id"=>$data->idEventDate))',
-        'value' => function ($data){
+        'value' => function ($data) use ($controller){
           if (Yii::app()->user->checkAccess('showProperties') || (Yii::app()->user->checkAccess('asEvent')) &&
-            $this->CheckDeptAccess($data->event->UserID,false)){
+            $controller->CheckDeptAccess($data->event->UserID,false)){
             echo CHtml::link('<i class="icon-pencil"></i>',Yii::app()->CreateUrl("events/update",array("id"=>$data->EventID)));
           }
         },
