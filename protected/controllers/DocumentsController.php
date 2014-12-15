@@ -38,6 +38,10 @@ class DocumentsController extends Controller {
                 'search','updateEditableCard', 'AjaxItems', 'AjaxDocAnswers'),
             'users' => array("@"),
         ),
+        array('allow', // allow ok
+            'actions' => array('rept1','rept2'),
+            'users' => array("*"),
+        ),
         array('deny', // deny all users
             'users' => array('*'),
         ),
@@ -242,6 +246,37 @@ class DocumentsController extends Controller {
     $this->render('//documents/xlsdoclist', array(
         'models' => $models
     ));
+  }
+  
+  public function actionRept1($year=''){
+    $data = array();
+    $year = Yii::app()->request->getParam('year',date('Y'));
+    $year = date('Y',strtotime($year.'-01-01'));
+    $data= Yii::app()->db->createCommand('select 
+ dcc.DocumentCategoryName as `cat`,
+(select count(idDocument)
+from  documentcategory dc  left join documents on dc.idDocumentCategory=documents.DocumentCategoryID left join userdepartment ud on ud.UserID=documents.UserID where ((Created > "'.$year.'-01-01" and ud.DeptID in (46,121,119,118)) ) and dc.idDocumentCategory=dcc.idDocumentCategory and DocumentVisibility is not null group by idDocumentCategory
+) as `at_all`,
+
+(select count(idDocument)
+from  documentcategory dc  left join documents on dc.idDocumentCategory=documents.DocumentCategoryID left join userdepartment ud on ud.UserID=documents.UserID where ((Created > "'.$year.'-01-01" and ud.DeptID in (46,121,119,118) and documents.ControlField IS NOT NULL and ControlField not like "")) and dc.idDocumentCategory=dcc.idDocumentCategory 
+ and DocumentVisibility is not null group by idDocumentCategory  
+) as `control_mark`,
+
+(select count(idDocument)
+from  documentcategory dc  left join documents on dc.idDocumentCategory=documents.DocumentCategoryID left join userdepartment ud on ud.UserID=documents.UserID where ((Created > "'.$year.'-01-01" and ud.DeptID in (46,121,119,118) and documents.ControlField IS NOT NULL and ControlField not like "" and mark is not null and mark not like "")) and dc.idDocumentCategory=dcc.idDocumentCategory  
+ and DocumentVisibility is not null group by idDocumentCategory
+) as `done_mark`
+ from  documentcategory dcc')->queryAll();
+    $this->layout = 'clear';
+    //var_dump($data);exit();
+    $this->render('//documents/xls_rept1',array('data'=>$data));
+  }
+  
+  public function actionRept2(){
+    $data = array();
+    
+    $this->render('//documents/xls_rept2',array('data'=>$data));
   }
 
   /**

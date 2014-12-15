@@ -226,8 +226,8 @@
         if (mtchs !== null){
           switch (i){
             case 0:
-              ret.start_date = new Date(mtchs[3]+'-'+mtchs[2]+'-'+mtchs[1]);
-              ret.end_date = new Date(mtchs[6]+'-'+mtchs[5]+'-'+mtchs[4]);
+              ret.start_date = new Date(parseInt(mtchs[3]),parseInt(mtchs[2])-1,parseInt(mtchs[1]));
+              ret.end_date = new Date(parseInt(mtchs[6]),parseInt(mtchs[5])-1,parseInt(mtchs[4]));
               if (
                   ret.start_date == 'Invalid Date'
                   || ret.end_date == 'Invalid Date'
@@ -237,8 +237,8 @@
               return ret;
               break;
             case 1:
-              ret.start_date = new Date(mtchs[4]+'-'+mtchs[3]+'-'+mtchs[1]);
-              ret.end_date = new Date(mtchs[4]+'-'+mtchs[3]+'-'+mtchs[2]);
+              ret.start_date = new Date(parseInt(mtchs[4]),parseInt(mtchs[3])-1,parseInt(mtchs[1]));
+              ret.end_date = new Date(parseInt(mtchs[4]),parseInt(mtchs[3])-1,parseInt(mtchs[2]));
               if (
                   ret.start_date == 'Invalid Date'
                   || ret.end_date == 'Invalid Date'
@@ -248,7 +248,7 @@
               return ret;
               break;
             case 2:
-              ret.start_date = new Date(mtchs[3]+'-'+mtchs[2]+'-'+mtchs[1]);
+              ret.start_date = new Date(parseInt(mtchs[3]),parseInt(mtchs[2])-1,parseInt(mtchs[1]));
               ret.end_date = ret.start_date;
               if (ret.start_date == 'Invalid Date'){
                 return null;
@@ -256,8 +256,8 @@
               return ret;
               break;
             case 3:
-              ret.start_date = new Date(_self._start_date.getFullYear()+'-'+mtchs[2]+'-'+mtchs[1]);
-              ret.end_date = new Date((_self._start_date.getFullYear() + _self.m_years)+'-'+mtchs[2]+'-'+mtchs[1]);
+              ret.start_date = new Date(_self._start_date.getFullYear(),parseInt(mtchs[2])-1,parseInt(mtchs[1]));
+              ret.end_date = new Date((_self._start_date.getFullYear() + _self.m_years),parseInt(mtchs[2])-1,parseInt(mtchs[1]));
               ret.step = [1,0,0];
               if (
                   ret.start_date == 'Invalid Date'
@@ -268,8 +268,8 @@
               return ret;
               break;
             case 4:
-              ret.start_date = new Date(mtchs[4]+'-'+mtchs[2]+'-'+mtchs[1]);
-              ret.end_date = new Date(mtchs[4]+'-'+mtchs[3]+'-'+mtchs[1]);
+              ret.start_date = new Date(parseInt(mtchs[4]),parseInt(mtchs[2])-1,parseInt(mtchs[1]));
+              ret.end_date = new Date(parseInt(mtchs[4]),parseInt(mtchs[3])-1,parseInt(mtchs[1]));
               if (
                   ret.start_date == 'Invalid Date'
                   || ret.end_date == 'Invalid Date'
@@ -285,7 +285,7 @@
               if (mtchs[2] === undefined){
                 ret.start_date = _self._start_date;
               } else {
-                ret.start_date = new Date(mtchs[5]+'-'+mtchs[4]+'-'+mtchs[3]);
+                ret.start_date = new Date(parseInt(mtchs[5]),parseInt(mtchs[4])-1,parseInt(mtchs[3]));
               }
               if (
                   ret.start_date == 'Invalid Date'
@@ -337,7 +337,7 @@
           a_rules.push(c_rule);
         }
       }
-      var temp_d = 0; 
+      var temp_d = 0;
       for (var i = 0; i < a_rules.length && k < 1000; i++ ){
         for (var dt = a_rules[i].start_date; dt <= a_rules[i].end_date  && k < 1000; k++ ){
           var y = dt.getFullYear()+a_rules[i].step[0],
@@ -391,7 +391,7 @@
           +'-'+MultiCalendar.prototype.padDigits(dates[i].getDate(),2);
         var td_id = _self.calendar_block_id +'_'+date_value;
         var current_date = new Date();
-          if ($("#"+_self.calendar_block_id+'_x_'+date_value).length === 0 && dates[i] > current_date){
+          if ($("#"+_self.calendar_block_id+'_x_'+date_value).length === 0){
             counters[0]++;
             _self.h_dates.push(dates[i]);
             $("#"+_self.calendar_block_id).append('<input type="hidden" id="'
@@ -399,7 +399,7 @@
               +'_x_'+date_value+'" '
             +'name="eventdates[]" value="'+date_value+'" />');
           }
-        if ($('#'+td_id) && dates[i] > current_date){
+        if ($('#'+td_id) ){
           $('#'+td_id).attr('class','highlighted');
         }
         counters[1] = $("#"+calendar_block_id+" table tbody tr td.highlighted").length;
