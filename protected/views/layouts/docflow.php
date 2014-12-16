@@ -123,6 +123,16 @@
                     "icon" => "icon-plus",),
             )
         ),
+              array('label' => 'Звіти', 'visible' => Yii::app()->user->checkAccess('asOffice')
+		  || Yii::app()->user->checkAccess('showProperties'), 
+                  'url' => "#", "icon" => "icon-info-sign",
+                  'items' => array(
+                      array('label' => 'Довідка про обсяг', 'url' => Yii::app()->createUrl("documents/rept1"), 
+                          "icon" => " icon-file",),
+                      /*array('label' => 'Зведення', 'url' => Yii::app()->createUrl("documents/rept2"), 
+                          "icon" => " icon-file",),*/
+                  )
+              ),
          array('label' => 'Користувач' . ((Yii::app()->user->checkAccess('asOperatorStart'))? ' ('.Yii::app()->user->name.')':''),
             'url' => '#',
             'icon' => 'icon-user',

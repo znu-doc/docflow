@@ -1,9 +1,10 @@
 <?php
 /* @var $data array */
+/* @var $year integer */
 
 error_reporting(E_ERROR);
 
-$file_name = 'Dovidka_'.date('Y') . '.xls';
+$file_name = 'Dovidka_'.$year . '.xls';
 $workbook = new Spreadsheet_Excel_Writer();
 $workbook->send($file_name);
 
