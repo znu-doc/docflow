@@ -133,3 +133,11 @@ span.CtrId{
   background-color: rgba(255,255,0,0.5) !important;
   color: black !important;
 }
+
+.label-college {
+  background-color: blue;
+}
+
+.label-science {
+  background-color: blue;
+}
