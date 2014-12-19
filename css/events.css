@@ -141,3 +141,18 @@ span.CtrId{
 .label-science {
   background-color: blue;
 }
+
+.label-city {
+  background-color: yellow;
+  color: black !important;
+}
+
+.label-vuz {
+  background-color: lightblue;
+  color: black !important;
+}
+
+.label-cult {
+  background-color: yellow;
+  color: black !important;
+}
