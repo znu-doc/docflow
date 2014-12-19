@@ -82,7 +82,7 @@ $this->widget('bootstrap.widgets.TbGridView', array(
         'value' => 'CHtml::link((!(strpos($data->event->EventName,"<") === false' 
           .'|| strpos($data->event->EventName,">") ===false))? '
           .'htmlspecialchars($data->event->EventName) : $data->event->EventName,'
-          .'Yii::app()->CreateUrl("events/index",array("id"=>$data->event->idEvent)))'
+          .'Yii::app()->CreateUrl("events/index",array("id"=>$data->event->idEvent)),array("title"=>"Створив користувач ".$data->event->user->info))'
           .'.(($data->event->NewsUrl)?CHtml::link("<i class=\'icon-share\'></i>",$data->event->NewsUrl):"")',
         'type' => 'raw'
       ),
@@ -119,8 +119,11 @@ $this->widget('bootstrap.widgets.TbGridView', array(
         'header'=>'дії',
         //'deleteButtonUrl' => 'Yii::app()->CreateUrl("events/eventdatedelete",array("id"=>$data->idEventDate))',
         'value' => function ($data) use ($controller){
+	  $u = User::model()->findByPk($data->event->UserID);
+	  $is_admin_event = in_array('EventAdmin',$u->getRoles());
           if (Yii::app()->user->checkAccess('showProperties') || (Yii::app()->user->checkAccess('asEvent')) &&
-            $controller->CheckDeptAccess($data->event->UserID,false)){
+            $controller->CheckDeptAccess($data->event->UserID,false) 
+            || $is_admin_event){
             echo CHtml::link('<i class="icon-pencil"></i>',Yii::app()->CreateUrl("events/update",array("id"=>$data->EventID)));
           }
         },

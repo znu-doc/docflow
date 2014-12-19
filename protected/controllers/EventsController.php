@@ -80,7 +80,8 @@ class EventsController extends Controller {
   
   public function actionUpdate($id){
     $model = $this->loadModel($id);
-    if (!Yii::app()->user->checkAccess('showProperties')){
+    $user = User::model()->findByPk(Yii::app()->user->id);
+    if (!Yii::app()->user->checkAccess('showProperties') && !in_array('EventAdmin',$user->getRoles())){
       $this->CheckDeptAccess($model->UserID,true);
     }
     $nmodel = $this->commonSave($model);

@@ -228,33 +228,33 @@ $this->widget('bootstrap.widgets.TbGridView', array(
                   ),
                 )
             );
-            if (Yii::app()->user->id == $data->UserID){
-              $form_delete = $controller->beginWidget(
-                  'bootstrap.widgets.TbActiveForm', array(
-                  'id' => 'deletedoc-form'-$data->idDocument,
-                  'method' => 'POST',
-                  'action' => Yii::app()->createUrl("documents/deletedocument"),
-                  'enableAjaxValidation' => false,
-                      )
-              );
-              /* @var $form_delete TbActiveForm */
-              echo CHtml::hiddenField('id', $data->idDocument);
-              echo CHtml::hiddenField('returl', Yii::app()->request->url);
-              $controller->widget(
-                  "bootstrap.widgets.TbButton", array(
-                    'buttonType' => 'submit',
-                    'type' => 'danger',
-                    "size" => "normal",
-                    'icon' => 'trash',
-                    'htmlOptions' => array(
-                      'title' => 'Видалити',
-                      'onclick' => 'if(!confirm("Остаточно видалити?"))return false;',
-                      'class' => 'ctrl_del_button'
-                    ),
-                  )
-              );
-              $controller->endWidget();
-            }
+//             if (Yii::app()->user->id == $data->UserID){
+//               $form_delete = $controller->beginWidget(
+//                   'bootstrap.widgets.TbActiveForm', array(
+//                   'id' => 'deletedoc-form'-$data->idDocument,
+//                   'method' => 'POST',
+//                   'action' => Yii::app()->createUrl("documents/deletedocument"),
+//                   'enableAjaxValidation' => false,
+//                       )
+//               );
+//               /* @var $form_delete TbActiveForm */
+//               echo CHtml::hiddenField('id', $data->idDocument);
+//               echo CHtml::hiddenField('returl', Yii::app()->request->url);
+//               $controller->widget(
+//                   "bootstrap.widgets.TbButton", array(
+//                     'buttonType' => 'submit',
+//                     'type' => 'danger',
+//                     "size" => "normal",
+//                     'icon' => 'trash',
+//                     'htmlOptions' => array(
+//                       'title' => 'Видалити',
+//                       'onclick' => 'if(!confirm("Остаточно видалити?"))return false;',
+//                       'class' => 'ctrl_del_button'
+//                     ),
+//                   )
+//               );
+//               $controller->endWidget();
+//             }
          },
          'htmlOptions' => array('class' => 'span1'),
          'type' => 'raw'
