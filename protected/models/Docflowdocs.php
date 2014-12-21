@@ -8,12 +8,10 @@
  * @property integer $idDocFlowDoc
  * @property integer $DocFlowID
  * @property integer $DocumentID
- * @property integer $NodeTypeID
  *
  * The followings are the available model relations:
  * @property Docflows $docFlow
  * @property Documents $document
- * @property Nodetypes $nodetype
  */
 class Docflowdocs extends CActiveRecord
 {
@@ -41,10 +39,10 @@ class Docflowdocs extends CActiveRecord
     // will receive user inputs.
     return array(
       array('DocFlowID, DocumentID', 'required'),
-      array('DocFlowID, DocumentID, NodeTypeID', 'numerical', 'integerOnly'=>true),
+      array('DocFlowID, DocumentID', 'numerical', 'integerOnly'=>true),
       // The following rule is used by search().
       // Please remove those attributes that should not be searched.
-      array('idDocFlowDoc, DocFlowID, DocumentID, NodeTypeID', 'safe', 'on'=>'search'),
+      array('idDocFlowDoc, DocFlowID, DocumentID', 'safe', 'on'=>'search'),
     );
   }
 
@@ -57,7 +55,6 @@ class Docflowdocs extends CActiveRecord
     return array(
       'docFlow' => array(self::BELONGS_TO, 'Docflows', 'DocFlowID'),
       'document' => array(self::BELONGS_TO, 'Documents', 'DocumentID'),
-      'nodetype' => array(self::BELONGS_TO, 'Nodetypes', 'NodeTypeID'),
     );
   }
         
@@ -70,7 +67,6 @@ class Docflowdocs extends CActiveRecord
     'idDocFlowDoc' => 'Id Doc Flow Doc',
     'DocFlowID' => 'Doc Flow',
     'DocumentID' => 'Document',
-    'NodeTypeID' => 'Node Type',
     );
   }
 
@@ -87,7 +83,6 @@ class Docflowdocs extends CActiveRecord
     $criteria->compare('idDocFlowDoc',$this->idDocFlowDoc);
     $criteria->compare('DocFlowID',$this->DocFlowID);
     $criteria->compare('DocumentID',$this->DocumentID);
-    $criteria->compare('NodeType',$this->NodeType);
 
     return new CActiveDataProvider($this, array(
       'criteria'=>$criteria,

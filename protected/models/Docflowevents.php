@@ -66,7 +66,6 @@ class Docflowevents extends CActiveRecord
     return array(
       'docFlow' => array(self::BELONGS_TO, 'Docflows', 'DocFlowID'),
       'event' => array(self::BELONGS_TO, 'Events', 'EventID'),
-      'nodetype' => array(self::BELONGS_TO, 'Nodetypes', 'NodeTypeID'),
     );
   }
         
