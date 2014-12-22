@@ -279,7 +279,52 @@ from  documentcategory dc  left join documents on dc.idDocumentCategory=document
     $data = array();
     $year = Yii::app()->request->getParam('year',date('Y'));
     $year = date('Y',strtotime($year.'-01-01'));
+    $data= Yii::app()->db->createCommand("
+select 
+idDepartment,
+DepartmentName,
+(select count(distinct dfd.DocumentID) from 
+  docflowgroupdepts dfgdp 
+  join docflowgroups dfg on dfgdp.DocFlowGroupID=dfg.idDocFlowGroup 
+  left join docflows df on df.DocFlowGroupID=dfg.idDocFlowGroup 
+  left join docflowdocs dfd on dfd.DocFlowID=df.idDocFlow 
+  join documents docs on docs.idDocument=dfd.DocumentID 
+ where dfgdp.DeptID=departments.idDepartment 
+  and not( docs.ControlField = '' or docs.ControlField is null) 
+  and dfg.OwnerID in (select UserID from userdepartment where DeptID = 46)
+) as zagalom,
+
+(select count(distinct dfd.DocumentID) from 
+  docflowgroupdepts dfgdp 
+  join docflowgroups dfg on dfgdp.DocFlowGroupID=dfg.idDocFlowGroup 
+  left join docflows df on df.DocFlowGroupID=dfg.idDocFlowGroup 
+  left join docflowdocs dfd on dfd.DocFlowID=df.idDocFlow 
+  join documents docs on docs.idDocument=dfd.DocumentID 
+ where dfgdp.DeptID=departments.idDepartment 
+  and not( docs.ControlField = '' or docs.ControlField is null) 
+  and docs.DocumentInputNumber like '%.".$year."%' 
+  and dfg.OwnerID in (select UserID from userdepartment where DeptID = 46)
+) as za_rik,
+
+(select count(distinct dfd.DocumentID) from 
+  docflowgroupdepts dfgdp 
+  join docflowgroups dfg on dfgdp.DocFlowGroupID=dfg.idDocFlowGroup 
+  left join docflows df on df.DocFlowGroupID=dfg.idDocFlowGroup 
+  left join docflowdocs dfd on dfd.DocFlowID=df.idDocFlow 
+  join documents docs on docs.idDocument=dfd.DocumentID 
+ where dfgdp.DeptID=departments.idDepartment 
+  and not( docs.ControlField = '' or docs.ControlField is null) 
+  and docs.DocumentInputNumber like '%.".$year."%' 
+  and not(docs.mark = '' or docs.mark is null) 
+  and dfg.OwnerID in (select UserID from userdepartment where DeptID = 46)
+) as vykonano
+
+from departments 
+where idDepartment not in (136,120,123,125,127,126,129,124,128,130,122,118,119,132,133,1,121) 
+order by DepartmentName
+")->queryAll();
     $this->layout = 'clear';
+    //var_dump($data);exit();
     $this->render('//documents/xls_rept2',array('data'=>$data,
     'year' => $year
     ));

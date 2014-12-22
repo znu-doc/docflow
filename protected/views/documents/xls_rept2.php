@@ -79,33 +79,35 @@ $worksheet->write(4, 5, iconv("utf-8", "windows-1251","з продовження
         $format_top_center);
 $worksheet->write(4, 6, iconv("utf-8", "windows-1251","прострочені"),
         $format_top_center);
-        
-$worksheet->write(5, 0, iconv("utf-8", "windows-1251","1"),
-        $format_wordwrap);
-$worksheet->write(5, 1, iconv("utf-8", "windows-1251","2"),
-        $format_wordwrap);
-$worksheet->write(5, 2, iconv("utf-8", "windows-1251","3"),
-        $format_wordwrap);
-$worksheet->write(5, 3, iconv("utf-8", "windows-1251","4"),
-        $format_wordwrap);
-$worksheet->write(5, 4, iconv("utf-8", "windows-1251","5"),
-        $format_wordwrap);      
-$worksheet->write(5, 5, iconv("utf-8", "windows-1251","6"),
-        $format_wordwrap);
-$worksheet->write(5, 6, iconv("utf-8", "windows-1251","7"),
-        $format_wordwrap);
 
 $i = 5;
-
+$k = 0;
 
 foreach ($data as $item){
-  $i++;
+$worksheet->write($i, 0, iconv("utf-8", "windows-1251",$data[$k]["DepartmentName"]),
+        $format_wordwrap);
+$worksheet->write($i, 1, iconv("utf-8", "windows-1251",$data[$k]["zagalom"]),
+        $format_wordwrap);
+$worksheet->write($i, 2, iconv("utf-8", "windows-1251",$data[$k]["za_rik"]),
+        $format_wordwrap);
+$worksheet->write($i, 3, iconv("utf-8", "windows-1251",$data[$k]["vykonano"]),
+        $format_wordwrap);
+$worksheet->write($i, 4, iconv("utf-8", "windows-1251",""),
+        $format_wordwrap);      
+$worksheet->write($i, 5, iconv("utf-8", "windows-1251",""),
+        $format_wordwrap);
+$worksheet->write($i, 6, iconv("utf-8", "windows-1251",""),
+        $format_wordwrap);
+  $i++; $k++;
 }
 
 	
-$worksheet->write($i+1, 0, iconv("utf-8", "windows-1251","В. о. начальника загального відділу      В. В. Буличова"),
-	$format_top_center);
-$worksheet->mergeCells($i+1,0,$i+1,6);
+$worksheet->write($i, 0, iconv("utf-8", "windows-1251","В. о. начальника загального відділу"),
+	$format_wordwrap);
+$worksheet->mergeCells($i,0,$i,2);
+$worksheet->write($i, 5, iconv("utf-8", "windows-1251","В. В. Буличова"),
+	$format_wordwrap);
+$worksheet->mergeCells($i,5,$i,6);
 // Let's send the file
 $worksheet->setMarginLeft(1.14);
 $worksheet->setMarginRight(0.01);
