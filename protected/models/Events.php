@@ -179,6 +179,18 @@ class Events extends CActiveRecord
       }
       return $vals;
     }
+    
+    public function isAllFacultiesInvited(){
+      $dept_data = Yii::app()->db->createCommand("SELECT group_concat(idDepartment order by idDepartment asc separator ',' ) as dept_ids 
+FROM `departments` 
+WHERE `FunctionDescription` LIKE 'Факультети ЗНУ' 
+group by FunctionDescription ")->queryAll();
+      $invited_data = Yii::app()->db->createCommand("SELECT group_concat(DeptID order by DeptID asc separator ',' ) as dept_ids 
+FROM `invited` 
+WHERE `EventID` = ".$this->idEvent."
+group by EventID ")->queryAll();
+      return ($invited_data[0]['dept_ids'] == $dept_data[0]['dept_ids'] );
+    }
 
   /**
    * @return array validation rules for model attributes.

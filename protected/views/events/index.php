@@ -258,8 +258,12 @@ $this->widget('bootstrap.widgets.TbButton',array(
         <div class="span12 dfbox">
           <ul>
           <?php $vals = $model->getInvited(); 
-            for ($i = 0; ($i < count($vals) && is_array($vals)); $i++){
-              echo '<li>'.$vals[$i]['InvitedComment'] . (($vals[$i]['Seets'] > 0)? ' ('.$vals[$i]['Seets']. ')' : '') .'</li>';
+	    if (!$model->isAllFacultiesInvited()){
+	      for ($i = 0; ($i < count($vals) && is_array($vals)); $i++){
+		echo '<li>'.$vals[$i]['InvitedComment'] . (($vals[$i]['Seets'] > 0)? ' ('.$vals[$i]['Seets']. ')' : '') .'</li>';
+	      }
+            } else {
+	      echo "<li>Усі факультети ЗНУ</li>";
             }
           ?>
           </ul>
