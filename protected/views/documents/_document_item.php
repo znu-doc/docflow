@@ -183,7 +183,7 @@ echo '<br/>'
     <div class="dfbox dfbox120 docnode_line2 span3">
       <span class='dfheader'>Контроль</span><br/>
         <div class="row-fluid">
-          <div class="span12 <?php echo (!$data->mark && !empty($data->ControlField))? 'controlItem':''; ?>">
+          <div class="span12 <?php echo (!$data->mark && strlen(trim($data->ControlField)))? 'controlItem':''; ?>">
       <?php
       if ($controller->CheckDeptAccess($data->UserID,false) || Yii::app()->user->CheckAccess('CanWatchAllDocs')){
         $controller->widget('editable.EditableField', array(
@@ -204,7 +204,7 @@ echo '<br/>'
         </div>
     </div>
     <div class="dfbox dfbox120 dfresolution span3" id="mark-<?php echo $data->idDocument; ?>"
-    style="background-color: <?php echo ((!empty($data->ControlField) && empty($data->mark))? 'rgba(255,64,64,0.6)'
+    style="background-color: <?php echo ((strlen(trim($data->ControlField)) && empty($data->mark))? 'rgba(255,64,64,0.6)'
     : ((!empty($data->mark)) ? 'rgba(64,255,64,0.6)' : 'rgba(220, 220, 255,0.7)') ); ?>;">
       <span class="dfheader">Відмітка про виконання</span><br/>
       <?php

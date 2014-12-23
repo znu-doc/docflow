@@ -38,6 +38,7 @@ class Documents extends CActiveRecord {
   public $searchField;
   public $MyDeptIDs;
   public $DocYear;
+  public $control_only;
 //  public $searchDeptAnswer;
   
   /**
@@ -216,6 +217,10 @@ class Documents extends CActiveRecord {
       //якщо є пошуковий токен контролю (окреме поле), то врахувати його
       $criteria->compare('t.ControlField'
         ,$this->ControlDateField,true);
+    }
+    if ($this->control_only){
+      $criteria->addCondition("trim(if(isnull(t.ControlField),'',t.ControlField)) not like '' 
+	and trim(if(isnull(t.mark),'',t.mark)) like '' ");
     }
     $criteria->compare('DocumentCategoryID',$this->DocumentCategoryID);
     $criteria->compare('t.idDocument', $this->idDocument);

@@ -61,6 +61,8 @@ class DocumentsController extends Controller {
     $reqSave = Yii::app()->request->getParam('Save',null);
     //лише не збережені документи
     $reqHidden = Yii::app()->request->getParam('hidden',null);
+    //лише документи з відмоткою контролю, але без відмітки виконання
+    $reqControl = Yii::app()->request->getParam('control',null);
     if (!$id){
       $reqId = intval(Yii::app()->request->getParam('id',0));
     } else { $reqId = intval($id);}
@@ -74,6 +76,7 @@ class DocumentsController extends Controller {
     $model = new Documents;
     $model->unsetAttributes();
     $model->DocumentVisibility = ($reqHidden)? 0:1;
+    $model->control_only = $reqControl;
     $model->MyDeptIDs = implode(',',$this->my_dept_ids);
     if ($reqDocuments){
       //встановлюємо вхідні атрибути моделі
@@ -259,12 +262,13 @@ from  documentcategory dc  left join documents on dc.idDocumentCategory=document
 ) as `at_all`,
 
 (select count(idDocument)
-from  documentcategory dc  left join documents on dc.idDocumentCategory=documents.DocumentCategoryID left join userdepartment ud on ud.UserID=documents.UserID where ((Created > "'.$year.'-01-01" and Created <= "'.$year.'-12-31" and ud.DeptID in (46,121,119,118) and documents.ControlField IS NOT NULL and ControlField not like "")) and dc.idDocumentCategory=dcc.idDocumentCategory 
+from  documentcategory dc  left join documents on dc.idDocumentCategory=documents.DocumentCategoryID left join userdepartment ud on ud.UserID=documents.UserID where ((Created > "'.$year.'-01-01" and Created <= "'.$year.'-12-31" and ud.DeptID in (46,121,119,118) and trim(if(isnull(ControlField),"",ControlField)) not like "")) and dc.idDocumentCategory=dcc.idDocumentCategory 
  and DocumentVisibility is not null group by idDocumentCategory  
 ) as `control_mark`,
 
 (select count(idDocument)
-from  documentcategory dc  left join documents on dc.idDocumentCategory=documents.DocumentCategoryID left join userdepartment ud on ud.UserID=documents.UserID where ((Created > "'.$year.'-01-01" and Created <= "'.$year.'-12-31" and ud.DeptID in (46,121,119,118) and documents.ControlField IS NOT NULL and ControlField not like "" and mark is not null and mark not like "")) and dc.idDocumentCategory=dcc.idDocumentCategory  
+from  documentcategory dc  left join documents on dc.idDocumentCategory=documents.DocumentCategoryID left join userdepartment ud on ud.UserID=documents.UserID where ((Created > "'.$year.'-01-01" and Created <= "'.$year.'-12-31" and ud.DeptID in (46,121,119,118) and trim(if(isnull(ControlField),"",ControlField)) not like "" 
+	and trim(if(isnull(mark),"",mark)) not like "" )) and dc.idDocumentCategory=dcc.idDocumentCategory  
  and DocumentVisibility is not null group by idDocumentCategory
 ) as `done_mark`
  from  documentcategory dcc')->queryAll();
@@ -301,7 +305,7 @@ DepartmentName,
   left join docflowdocs dfd on dfd.DocFlowID=df.idDocFlow 
   join documents docs on docs.idDocument=dfd.DocumentID 
  where dfgdp.DeptID=departments.idDepartment 
-  and not( docs.ControlField = '' or docs.ControlField is null) 
+  and trim(if(isnull(ControlField),'',ControlField)) not like '' 
   and docs.DocumentInputNumber like '%.".$year."%' 
   and dfg.OwnerID in (select UserID from userdepartment where DeptID = 46)
 ) as za_rik,
@@ -313,9 +317,9 @@ DepartmentName,
   left join docflowdocs dfd on dfd.DocFlowID=df.idDocFlow 
   join documents docs on docs.idDocument=dfd.DocumentID 
  where dfgdp.DeptID=departments.idDepartment 
-  and not( docs.ControlField = '' or docs.ControlField is null) 
+  and trim(if(isnull(ControlField),'',ControlField)) not like '' 
+  and trim(if(isnull(mark),'',mark)) not like '' 
   and docs.DocumentInputNumber like '%.".$year."%' 
-  and not(docs.mark = '' or docs.mark is null) 
   and dfg.OwnerID in (select UserID from userdepartment where DeptID = 46)
 ) as vykonano
 

@@ -158,7 +158,10 @@ $this->widget('bootstrap.widgets.TbGridView', array(
          '<div class="row-fluid">'
            .CHtml::link("<span class='btn'><i class='icon-bookmark'></i></span>",
            Yii::app()->CreateUrl("/documents/index?own=1"),
-           array('title' => 'Показати лише власні'))
+           array('title' => 'Показати лише власні')).'</div><div class="row-fluid">'
+           .CHtml::link("<span class='btn btn-danger'><i class='icon-exclamation-sign'></i></span>",
+           Yii::app()->CreateUrl("/documents/index?control=1"),
+           array('title' => 'Показати взяті на контроль без відмітки виконання'))
            .'</div>',
          'value' => function ($data, $row) use ($controller){
             echo '<span id="doc-'.$data->idDocument.'"></span>';

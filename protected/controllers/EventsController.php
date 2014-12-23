@@ -378,17 +378,20 @@ class EventsController extends Controller {
     $date_time =  preg_replace("/,(\d\d?)(,|$)/i",",$1 числа кожного місяця$2",
           str_replace($this->wdays,$this->wday_alias, mb_strtolower($model->DateSmartField,'utf8')))
         . " ".(($model->StartTime)? mb_substr($model->StartTime,0,5,"utf-8"): "(час початку не вказано)")
-        .(($model->FinishTime)? " - ".mb_substr($model->FinishTime,0,5,"utf-8"): "")
-;
-    $vals = $model->getInvited(); 
-    for ($i = 0; ($i < count($vals) && is_array($vals)); $i++){
-      if ($i == 0){
-        $invited .= '<ul>';
-      }
-      $invited .= '<li>'.$vals[$i]['InvitedComment']
-        .'</li>';
-      if ($i == count($vals) - 1){
-        $invited .= "</ul>";
+        .(($model->FinishTime)? " - ".mb_substr($model->FinishTime,0,5,"utf-8"): "");
+    if ($model->isAllFacultiesInvited()){
+      $invited = "<ul><li>Усі факультети</li></ul>";
+    } else {
+      $vals = $model->getInvited(); 
+      for ($i = 0; ($i < count($vals) && is_array($vals)); $i++){
+	if ($i == 0){
+	  $invited .= '<ul>';
+	}
+	$invited .= '<li>'.$vals[$i]['InvitedComment']
+	  .'</li>';
+	if ($i == count($vals) - 1){
+	  $invited .= "</ul>";
+	}
       }
     }
     $vals = $model->getOrganizers(); 
