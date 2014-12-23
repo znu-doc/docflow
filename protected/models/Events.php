@@ -129,6 +129,44 @@ class Events extends CActiveRecord
     }
     
     public function beforeDelete(){
+      $response = false;
+      // підключення
+      $url = "http://sites.znu.edu.ua/cms/index.php";
+      //$url = "http://10.1.22.8/cms/index.php"; //test-service
+      $ch = curl_init($url);
+      // дані для відправки
+      $data = array(
+	'api_key' => 'dksjf;aj;weio[wlooiuoiuhlk;lk\'',
+	//'api_key' => '1234567',//test service
+	'action' => 'calendar/api/delete',
+	'lang' => 'ukr',
+	'site_id' => 89,//62,
+	'nazva' => $this->EventName,
+	'vis' => 1,
+	'categories' => implode(',',
+	  array(
+	    $this->eventKind->EventKindName,
+	    $this->eventType->EventTypeName
+	  )
+	),
+	'dates' => array(), 
+	'description' => ''
+      );
+      if ($this->ExternalID > 0){
+	$data['id'] = $this->ExternalID;
+      }
+      //var_dump($data);exit();
+      curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+      // треба отримати результат
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      // запит...
+      $response = curl_exec($ch);
+      //$errmsg  = curl_error( $ch );
+      //$err     = curl_errno( $ch );
+      //$header  = curl_getinfo( $ch );
+      // закрити з_єднання
+      curl_close($ch);
+
       foreach (Eventorganizers::model()->findAll('EventID='.$this->idEvent) as $orgmodel){
         $orgmodel->delete();
       }

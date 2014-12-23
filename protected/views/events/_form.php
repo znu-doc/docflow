@@ -249,6 +249,33 @@
       </div>
       
       <div class="span6">
+	<div class="row-fluid" id="DateRulesInfo" style="display: none;">
+	<?php
+	  Yii::app()->user->setFlash('info', 'Допустимі вирази для правила формування дат (приклади):
+	  <ul>
+	  <li>проміжок дат: 29.12.2014 - 18.01.2015 , 01.01.2015-07.01.2015</li>
+	  <li>проміжок у межах місяця: 19-29.12.2014 , 01-07.01.2015</li>
+	  <li>конкретна дата: 29.12.2014 , 01.01.2015</li>
+	  <li>один раз у рік: 29.12 , 01.01</li>
+	  <li>один раз у місяць: 29.10-12.2014 , 01.01-05.2015</li>
+	  <li>кожного тижня у проміжку: ср/29.12.2014-18.01.2015, сб/01.01.2015-01.02.2015</li>
+	  <li>всі допустимі вище вирази через кому</li>
+	  </ul>
+	  ');
+	  $this->widget('bootstrap.widgets.TbAlert', array(
+	    'fade'=>true, // use transitions?
+	    'block'=>true,
+	    'closeText'=>'&times;', // close link text - if set to false, no close link is displayed
+	    'alerts'=>array( // configurations per alert type
+		'info'=>array('block'=>true, 'fade'=>true, 'closeText'=>'&times;'), 
+		// success, info, warning, error or danger
+	    ),
+	    'htmlOptions' => array(
+	      'class' => 'span12 alert_info',
+	    )
+	  )); 
+	?>
+	</div>
         <div class="row-fluid">
           <div class="span6">
             <div class="row-fluid">
@@ -257,7 +284,8 @@
                   'class' => 'span10 dfheader',
                 ));
               ?>
-              <span class="span1 dfheader" id="DateSmartInfo"><a href="#" class="icon-info-sign"></a></span>
+              <span class="span1 dfheader" id="DateSmartInfo" >
+              <a href="#" class="icon-info-sign" onclick="$('#DateRulesInfo').slideToggle();return false;"></a></span>
             </div>
             <div class="row-fluid">
             <?php
