@@ -43,6 +43,8 @@
       /^\s*(пн|вт|ср|чт|пт|сб|нд)\s*(\/\s*(\d{1,2})\.(\d{1,2})\.(\d{4,4})\s*-\s*(\d{1,2})\.(\d{1,2})\.(\d{4,4})\s*)?$/i,
     ];
     this.counters = [0,0];
+    this.timer = undefined;
+    this.timerCheckCount = 0;
     
     var _self = this;
     
@@ -302,7 +304,7 @@
               if (mtchs[2] === undefined){
                 ret.end_date = new Date(ret.start_date.getFullYear(),ret.start_date.getMonth()+4,0);
               } else {
-                ret.end_date = new Date(mtchs[8]+'-'+mtchs[7]+'-'+mtchs[6]);
+                ret.end_date = new Date(parseInt(mtchs[8]),parseInt(mtchs[7])-1,parseInt(mtchs[6]));
               }
               ret.step = [0,0,7];
               return ret;
@@ -409,47 +411,64 @@
     }
     
     if (_self.input_field_id !== null){
-      this.$input_field.keyup(function(){
-  var counters = _self.hightLightDates($(this).val());
-  var $msg_node = _self.$calendar_msg_block;
-  if ($msg_node.length){
-    $msg_node.html("");
-  }
-  if (counters[0] == -1){
-    $msg_node.append("<div class='msg_val'>занадто великий інтервал</div>");
-    $(this).css('border-color','rgb(255,0,0)');
-    return ;
-  }
-  for (var i = 0; (i < _self.h_dates.length && $msg_node.length); i++){
-    if (i === 0){
-      $msg_node.append("<div class='msg_val'>Обрані дати:</div>");
-      $msg_node.append(""
-        +MultiCalendar.prototype.padDigits(_self.h_dates[i].getDate(),2)+'.'
-        +MultiCalendar.prototype.padDigits((_self.h_dates[i].getMonth()+1),2)+'.'
-        +(_self.h_dates[i].getFullYear()));
-    } else {
-      $msg_node.append(""+", "
-        +MultiCalendar.prototype.padDigits(_self.h_dates[i].getDate(),2)+'.'
-        +MultiCalendar.prototype.padDigits((_self.h_dates[i].getMonth()+1),2)+'.'
-        +(_self.h_dates[i].getFullYear()));
-    }
-  }
-  if (_self.counters[0] > 0 && _self.counters[1] === 0){
-    $(this).css('border-color','rgb(255,225,0)');
-  }
-  if (_self.counters[0] > 0 && _self.counters[1] > 0){
-    $(this).css('border-color','rgb(0,225,0)');
-  }
-  if (_self.counters[0] === 0){
-    $(this).css('border-color','rgb(255,0,0)');
-  }
+      //this.$input_field.keyup(function(){
+      this.checkInputChange = function(){
+	var counters = _self.hightLightDates(_self.$input_field.val());
+	var $msg_node = _self.$calendar_msg_block;
+	if ($msg_node.length){
+	  $msg_node.html("");
+	}
+	if (counters[0] == -1){
+	  $msg_node.append("<div class='msg_val'>занадто великий інтервал</div>");
+	  _self.$input_field.css('border-color','rgb(255,0,0)');
+	  return ;
+	}
+	for (var i = 0; (i < _self.h_dates.length && $msg_node.length); i++){
+	  if (i === 0){
+	    $msg_node.append("<div class='msg_val'>Обрані дати:</div>");
+	    $msg_node.append(""
+	      +MultiCalendar.prototype.padDigits(_self.h_dates[i].getDate(),2)+'.'
+	      +MultiCalendar.prototype.padDigits((_self.h_dates[i].getMonth()+1),2)+'.'
+	      +(_self.h_dates[i].getFullYear()));
+	  } else {
+	    $msg_node.append(""+", "
+	      +MultiCalendar.prototype.padDigits(_self.h_dates[i].getDate(),2)+'.'
+	      +MultiCalendar.prototype.padDigits((_self.h_dates[i].getMonth()+1),2)+'.'
+	      +(_self.h_dates[i].getFullYear()));
+	  }
+	}
+	if (_self.counters[0] > 0 && _self.counters[1] === 0){
+	  _self.$input_field.css('border-color','rgb(255,225,0)');
+	}
+	if (_self.counters[0] > 0 && _self.counters[1] > 0){
+	  _self.$input_field.css('border-color','rgb(0,225,0)');
+	}
+	if (_self.counters[0] === 0){
+	  _self.$input_field.css('border-color','rgb(255,0,0)');
+	}
+      };//);
+      
+      this.startTimer = function () {
+	_self.timer = setInterval(function(){_self.checkInputChange()}, 500); // (1/5 sec)
+      }
+      
+      this.endTimer = function endTimer() {
+	clearInterval(_self.timer);
+	_self.timerCheckCount = 0;
+      }
+      
+      this.$input_field.focus(function() {
+	  // turn on timer
+	  _self.startTimer();
+      }).blur(function() {
+	  // turn off timer
+	  _self.endTimer();
       });
     }
     
-    
     _self.putCalendar();
     if (_self.$input_field !== null){
-      _self.$input_field.keyup();
+      _self.checkInputChange();
     }
     
   };

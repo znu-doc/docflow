@@ -22,37 +22,13 @@
       "<?php echo Yii::app()->CreateUrl("events/ajaxcounters"); ?>"
     );
 
-    
-    $("#Events_StartTime").keyup(function(){
-      var str = $(this).val();
+    var finish_time_func = function(){
+      var str = $("#Events_FinishTime").val();
       var len = str.length;
       var tm;
-      $(this).css('border-color','rgb(255, 0, 0)');
+      $("#Events_FinishTime").css('border-color','rgb(255, 0, 0)');
       if (!len){
-        $(this).css('border-color','yellow');
-        return false;
-      }
-      tm = str.match(/^\s*\d{1,2}:\d{1,2}(:\d{1,2})?\s*$/);
-      if (tm && ($("#Events_FinishTime").css('border-color') !== "rgb(255, 0, 0)") || $("#Events_FinishTime").val().length){
-        var c = new Date();
-        var ft = ($("#Events_FinishTime").val().length)? $("#Events_FinishTime").val():"23:59:59";
-        var sDate = new Date(c.getFullYear()+'-'+MultiCalendar.prototype.padDigits(c.getMonth()+1,2)
-                +'-'+MultiCalendar.prototype.padDigits(c.getDate(),2)+"T"+$(this).val());
-        var fDate = new Date(c.getFullYear()+'-'+MultiCalendar.prototype.padDigits(c.getMonth()+1,2)
-                +'-'+MultiCalendar.prototype.padDigits(c.getDate(),2)+"T"+ft);
-        if (sDate <= fDate){
-          $(this).css('border-color','rgb(0, 255, 0)');
-        }
-      }
-    });
-    
-    $("#Events_FinishTime").keyup(function(){
-      var str = $(this).val();
-      var len = str.length;
-      var tm;
-      $(this).css('border-color','rgb(255, 0, 0)');
-      if (!len){
-        $(this).css('border-color','yellow');
+        $("#Events_FinishTime").css('border-color','yellow');
         return false;
       }
       tm = str.match(/^\s*\d{1,2}:\d{1,2}(:\d{1,2})?\s*$/);
@@ -61,14 +37,44 @@
         var sDate = new Date(c.getFullYear()+'-'+MultiCalendar.prototype.padDigits(c.getMonth()+1,2)
                 +'-'+MultiCalendar.prototype.padDigits(c.getDate(),2)+"T"+$("#Events_StartTime").val());
         var fDate = new Date(c.getFullYear()+'-'+MultiCalendar.prototype.padDigits(c.getMonth()+1,2)
-                +'-'+MultiCalendar.prototype.padDigits(c.getDate(),2)+"T"+$(this).val());
+                +'-'+MultiCalendar.prototype.padDigits(c.getDate(),2)+"T"+$("#Events_FinishTime").val());
 
         if (sDate <= fDate){
-          $(this).css('border-color','rgb(0, 255, 0)');
+          $("#Events_FinishTime").css('border-color','rgb(0, 255, 0)');
         }
       }
-      
-    });
+    }
+    
+    var start_time_func = function(){
+      var str = $("#Events_StartTime").val();
+      var len = str.length;
+      var tm;
+      $("#Events_StartTime").css('border-color','rgb(255, 0, 0)');
+      if (!len){
+        $("#Events_StartTime").css('border-color','yellow');
+        return false;
+      }
+      tm = str.match(/^\s*\d{1,2}:\d{1,2}(:\d{1,2})?\s*$/);
+      if (tm && ($("#Events_FinishTime").css('border-color') !== "rgb(255, 0, 0)") || $("#Events_FinishTime").val().length){
+        var c = new Date();
+        var ft = ($("#Events_FinishTime").val().length)? $("#Events_FinishTime").val():"23:59:59";
+        var sDate = new Date(c.getFullYear()+'-'+MultiCalendar.prototype.padDigits(c.getMonth()+1,2)
+                +'-'+MultiCalendar.prototype.padDigits(c.getDate(),2)+"T"+$("#Events_StartTime").val());
+        var fDate = new Date(c.getFullYear()+'-'+MultiCalendar.prototype.padDigits(c.getMonth()+1,2)
+                +'-'+MultiCalendar.prototype.padDigits(c.getDate(),2)+"T"+ft);
+        if (sDate <= fDate){
+          $("#Events_StartTime").css('border-color','rgb(0, 255, 0)');
+        }
+      }
+    }
+    
+    $("#Events_StartTime").keyup(start_time_func);
+    $("#Events_StartTime").blur(start_time_func);
+    $("#Events_StartTime").click(start_time_func);
+    
+    $("#Events_FinishTime").keyup(finish_time_func);
+    $("#Events_FinishTime").blur(finish_time_func);
+    $("#Events_FinishTime").click(finish_time_func);
 
     //////////////////////////////////////////////////////////////////////////
     var invWidget = new InvitedWidget(
@@ -248,9 +254,10 @@
             <div class="row-fluid">
               <?php
                 echo $eventscreate_form->labelEx($model, 'DateSmartField', array(
-                  'class' => 'span12 dfheader',
+                  'class' => 'span10 dfheader',
                 ));
               ?>
+              <span class="span1 dfheader" id="DateSmartInfo"><a href="#" class="icon-info-sign"></a></span>
             </div>
             <div class="row-fluid">
             <?php

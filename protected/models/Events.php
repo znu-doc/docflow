@@ -180,6 +180,10 @@ class Events extends CActiveRecord
       return $vals;
     }
     
+  /**
+   * Метод визначає, чи обрані в точності усі факультети ЗНУ без вказівки місць
+   * @return array validation rules for model attributes.
+   */
     public function isAllFacultiesInvited(){
       $dept_data = Yii::app()->db->createCommand("SELECT group_concat(idDepartment order by idDepartment asc separator ',' ) as dept_ids 
 FROM `departments` 
@@ -189,7 +193,18 @@ group by FunctionDescription ")->queryAll();
 FROM `invited` 
 WHERE `EventID` = ".$this->idEvent."
 group by EventID ")->queryAll();
-      return ($invited_data[0]['dept_ids'] == $dept_data[0]['dept_ids'] );
+      $invited_seets = Yii::app()->db->createCommand("SELECT sum(if(isnull(Seets),0,Seets)) as invited_seets
+FROM `invited` 
+WHERE `EventID` = ".$this->idEvent."
+group by EventID ")->queryAll();
+      if (!isset($dept_data[0]) || !isset($invited_data[0])){
+	return false;
+      }
+      if (!isset($dept_data[0]['dept_ids']) || !isset($invited_data[0]['dept_ids'])){
+	return false;
+      }
+      return ( ($invited_data[0]['dept_ids'] == $dept_data[0]['dept_ids']) 
+	&& ($invited_seets[0]['invited_seets'] == 0) );
     }
 
   /**
