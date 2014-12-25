@@ -39,8 +39,8 @@ h1 {
     if ($model->ExternalID && strlen($model->NewsUrl) > 0){
         Yii::app()->user->setFlash('info', '<a href="'.$model->NewsUrl.'">Також є на сайті ЗНУ.</a>');
       } else {
-	if ($response){
-	  Yii::app()->user->setFlash('info', $response);
+  if ($response){
+    Yii::app()->user->setFlash('info', $response);
         }
       }
     if ($model->ExternalID && strlen($model->NewsUrl) > 0 || $response){
@@ -64,20 +64,20 @@ h1 {
     if (($eflows = Docflowevents::model()->findAll('EventID='.$model->idEvent)) &&
       Yii::app()->user->id == $model->UserID){
         Yii::app()->user->setFlash('success', '<a href="'
-	  .Yii::app()->CreateUrl('docflows/index',array('id' => $eflows[0]->DocFlowID))
-	  .'">Розсилка запрошеним через документообіг.</a>');
-	$this->widget('bootstrap.widgets.TbAlert', array(
-	  'fade'=>true, // use transitions?
-	  'block'=>true,
-	  'closeText'=>'&times;', // close link text - if set to false, no close link is displayed
-	  'alerts'=>array( // configurations per alert type
-	      'success'=>array('block'=>true, 'fade'=>true, 'closeText'=>'&times;'), 
-	      // success, info, warning, error or danger
-	  ),
-	  'htmlOptions' => array(
-	    'class' => 'span12 alert_info',
-	  )
-	));
+    .Yii::app()->CreateUrl('docflows/index',array('id' => $eflows[0]->DocFlowID))
+    .'">Розсилка запрошеним через документообіг.</a>');
+  $this->widget('bootstrap.widgets.TbAlert', array(
+    'fade'=>true, // use transitions?
+    'block'=>true,
+    'closeText'=>'&times;', // close link text - if set to false, no close link is displayed
+    'alerts'=>array( // configurations per alert type
+        'success'=>array('block'=>true, 'fade'=>true, 'closeText'=>'&times;'), 
+        // success, info, warning, error or danger
+    ),
+    'htmlOptions' => array(
+      'class' => 'span12 alert_info',
+    )
+  ));
       } 
   ?>
   </div>
@@ -201,11 +201,20 @@ $this->widget('bootstrap.widgets.TbButton',array(
         <div class="row-fluid">
           <div class="span12 dfbox">
           <?php
-	    if ($model->FileID){
-	      echo CHtml::link("[завантажити]",Yii::app()->CreateUrl('events/attachment',array('id' => $model->idEvent)));
+          if ($model->FileID){
+            $_image = $this->embedImageFromAttachment($model->idEvent);
+            if ($_image !== false){
+              ?>
+              <img src="<?php echo $_image; ?>" alt="зображення" />
+              <?php
             } else {
-	      echo "Відсутній";
+              echo CHtml::link("[завантажити]",
+                Yii::app()->CreateUrl('events/attachment',
+                  array('id' => $model->idEvent)));
             }
+          } else {
+            echo "Відсутній";
+          }
           ?>
           </div>
         </div>
@@ -258,12 +267,12 @@ $this->widget('bootstrap.widgets.TbButton',array(
         <div class="span12 dfbox">
           <ul>
           <?php $vals = $model->getInvited(); 
-	    if (!$model->isAllFacultiesInvited()){
-	      for ($i = 0; ($i < count($vals) && is_array($vals)); $i++){
-		echo '<li>'.$vals[$i]['InvitedComment'] . (($vals[$i]['Seets'] > 0)? ' ('.$vals[$i]['Seets']. ')' : '') .'</li>';
-	      }
+      if (!$model->isAllFacultiesInvited()){
+        for ($i = 0; ($i < count($vals) && is_array($vals)); $i++){
+    echo '<li>'.$vals[$i]['InvitedComment'] . (($vals[$i]['Seets'] > 0)? ' ('.$vals[$i]['Seets']. ')' : '') .'</li>';
+        }
             } else {
-	      echo "<li>Усі факультети ЗНУ</li>";
+        echo "<li>Усі факультети ЗНУ</li>";
             }
           ?>
           </ul>

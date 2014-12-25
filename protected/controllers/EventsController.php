@@ -227,7 +227,7 @@ class EventsController extends Controller {
     $model = Events::model()->findByPk($id);
     if (!$model){
 	throw new CHttpException(404, 
-	  'Захід з #'.$id.' не знайдено.');
+	  'Захід #'.$id.' не знайдено.');
     }
     if ($model->FileID){
       $this->redirect(Yii::app()->CreateUrl("/files/DownloadFile",array('id' => $model->FileID)));
@@ -240,7 +240,7 @@ class EventsController extends Controller {
     $model = Events::model()->findByPk($id);
     if (!$model){
 	throw new CHttpException(404, 
-	  'Захід з #'.$id.' не знайдено.');
+	  'Захід #'.$id.' не знайдено.');
     }
     if ($model->FileID){
       $model->attfile->delete();
@@ -248,6 +248,31 @@ class EventsController extends Controller {
       $model->save();
     }
     $this->redirect(Yii::app()->CreateUrl("events/update",array('id' => $model->idEvent)));
+  }
+  
+  protected function embedImageFromAttachment($id){
+    $model = Events::model()->findByPk($id);
+    if (!$model){
+	throw new CHttpException(404, 
+	  'Захід #'.$id.' не знайдено.');
+    }
+    if (!$model->FileID){
+	throw new CHttpException(404, 
+	  'Захід #'.$id.' не має вкладеного файлу.');
+    }
+    $fullname = $model->attfile->getFullName();
+    if (!$model->attfile->FileExists()){
+	throw new CHttpException(404, 
+	  'Файл "'.$fullname.'" не знайдено.');
+    }
+    $contents = file_get_contents($fullname);
+    $base64   = base64_encode($contents); 
+    if(($mime=CFileHelper::getMimeTypeByExtension($fullname))===null)
+              $mime='text/plain';
+    if (strpos($mime,"image") === false){
+      return false;
+    }
+    return ('data:' . $mime . ';base64,' . $base64);
   }
   
   public function actionAjaxcounters(){
@@ -291,8 +316,13 @@ class EventsController extends Controller {
    */
   protected function saveAttachment($model){
     $att = CUploadedFile::getInstance($model, 'attachment');
+    //var_dump($att);exit();
     if ( $att !== null){
       $file = new Files();
+      if (!$att->getTempName()){
+        throw new CHttpException(400, 
+          'Сталася помилка: файл завеликий або пошкоджений.');
+      }
       $username = trim(Yii::app()->user->name);
       $md5_name = md5_file($att->getTempName());
       $ext = $att->extensionName;
@@ -330,6 +360,16 @@ class EventsController extends Controller {
    */
   protected function genDocFlow($model){
     if (!$model->create_docflow || empty($model->invited_ids)){
+      return false;
+    }
+    $no_invited = true;
+    foreach ($model->invited_ids as $invited_id){
+      if ($invited_id > 0){
+        $no_invited = false;
+        break;
+      }
+    }
+    if ($no_invited){
       return false;
     }
     $old_docflowevents = Docflowevents::model()->findAllByAttributes(

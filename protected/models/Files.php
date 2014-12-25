@@ -139,12 +139,21 @@ class Files extends CActiveRecord {
   
   /**
    * Метод визначає, чи існує реальний файл поточної моделі
-   * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+   * @return boolean
    */
   public function FileExists(){
     //визначення шляху, де знаходиться файл
     $file_entity = $this->folder . $this->FileLocation;
     return is_file($file_entity);
+  }
+  
+  /**
+   * Метод повертає повний абсолютний шлях до файлу з назвою включно
+   * @return string
+   */
+  public function getFullName(){
+    //визначення шляху, де знаходиться файл
+    return $this->folder . $this->FileLocation;
   }
 
 }

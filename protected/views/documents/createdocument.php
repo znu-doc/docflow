@@ -227,7 +227,7 @@
     
     <div class='row-fluid'>
       <div class="span6 dfbox">
-        <div class="span12 dfheader">Категорія</div>
+        <div class="span12 dfheader">Категорія <span style="color: red;">(будьте уважні)</span></div>
         <div class="span12">
         <?php
         $this->widget('editable.EditableField', array(

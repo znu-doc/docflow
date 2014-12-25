@@ -360,7 +360,7 @@
             </div>
           </div>
           <div class="span6">
-            <div class="dfheader">Обрані (в полях можна вказати кількість)</div>
+            <div class="dfheader">Обрані</div>
             <div id = "_AddedItemsArea">
             <?php 
             $vals = $model->getInvited();
@@ -449,7 +449,7 @@
 	<?php
 	if (!$model->FileID){
 	?>
-	<div class="dfheader">Можна прикріпити один файл (необов`язково)</div>
+	<div class="dfheader">Файл</div>
 	<?php
 	} else {
 	?>
