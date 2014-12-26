@@ -88,6 +88,13 @@ class Events extends CActiveRecord
             $this->event_dates[] = $item->EventDate;
         }
         asort($this->event_dates,SORT_STRING);
+        if ($this->FileID){
+          $fullname = $this->attfile->getFullName();
+          if (!$this->attfile->FileExists()){
+              $this->FileID = null;
+              $this->attfile = null;
+          }
+        }
         return parent::afterFind();
     }
 

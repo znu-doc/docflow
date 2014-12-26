@@ -150,6 +150,26 @@
    )
   );
 ?>
+<div style="text-align: right !important;">
+<?php
+if (Yii::app()->user->checkAccess('showProperties') || (
+  in_array('EventAdmin',User::model()->findByPk(Yii::app()->user->id)->getRoles())
+  && !$model->isNewRecord
+)){
+$this->widget('bootstrap.widgets.TbButton',array(
+  'size' => 'mini',
+  'type' => 'danger',
+  'url' => Yii::app()->CreateUrl('events/delete',array('id' => $model->idEvent)),
+  'label' => 'Видалити',
+  'icon' => 'trash white',
+  'htmlOptions' => array(
+    'onclick' => 'if(!confirm("Остаточно?")){return false;}',
+  )
+));
+}
+?>
+</div>
+
 <div class='row-fluid'>
   <div class="span12 dfbox">
     <div class='row-fluid'>

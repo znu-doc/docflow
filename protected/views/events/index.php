@@ -113,7 +113,7 @@ $this->widget('bootstrap.widgets.TbButton',array(
 <?php
 if (Yii::app()->user->checkAccess('showProperties') || (
   in_array('EventAdmin',User::model()->findByPk(Yii::app()->user->id)->getRoles())
-  && $this->CheckDeptAccess($model->UserID,false)
+  //&& 1 $this->CheckDeptAccess($model->UserID,false)
 )){
 $this->widget('bootstrap.widgets.TbButton',array(
   'size' => 'mini',

@@ -257,13 +257,11 @@ class EventsController extends Controller {
 	  'Захід #'.$id.' не знайдено.');
     }
     if (!$model->FileID){
-	throw new CHttpException(404, 
-	  'Захід #'.$id.' не має вкладеного файлу.');
+	return false;
     }
     $fullname = $model->attfile->getFullName();
     if (!$model->attfile->FileExists()){
-	throw new CHttpException(404, 
-	  'Файл "'.$fullname.'" не знайдено.');
+	return false;
     }
     $contents = file_get_contents($fullname);
     $base64   = base64_encode($contents); 
