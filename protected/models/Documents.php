@@ -245,7 +245,7 @@ class Documents extends CActiveRecord {
     }
     if ($this->DocYear){
       $criteria->compare('if(isnull(t.SubmissionDate),t.Created,t.SubmissionDate)',$this->DocYear,true);
-    } else {
+    } else if (!$this->idDocument) {
       $criteria->compare('if(isnull(t.SubmissionDate),t.Created,t.SubmissionDate)',date('Y'),true);
     }
     if (!empty($this->searchDocflow)){
