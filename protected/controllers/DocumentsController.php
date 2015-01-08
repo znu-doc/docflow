@@ -411,12 +411,12 @@ order by DepartmentName
     foreach ($docs as $doc) {
       $n = preg_match('/([0-9]+)[\/|\\\].+/', $doc->DocumentInputNumber, $matches);
       if ($n) {
-        $next_n = (integer) $matches[1] + 1;
-        $number = '№ ' . $next_n . '/' . $postfix . ' від ';
+        $next_n = intval($matches[1]) + 1;
+        $number = '№ ' . str_pad($next_n, 2, "0", STR_PAD_LEFT) . '/' . $postfix . ' від ';
         return $number;
       }
     }
-    $number = '№ 1/' . $postfix . ' від ';
+    $number = '№ 01/' . $postfix . ' від ';
     return $number;
   }
 
