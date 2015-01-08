@@ -244,7 +244,7 @@ class Documents extends CActiveRecord {
       $criteria->addCondition('t.DocumentVisibility IS NULL OR t.DocumentVisibility=0');
     }
     if ($this->DocYear){
-      $criteria->compare('t.SubmissionDate',$this->DocYear,true);
+      $criteria->compare('if(isnull(t.SubmissionDate),t.Created,t.SubmissionDate)',$this->DocYear,true);
     } else {
       $criteria->compare('if(isnull(t.SubmissionDate),t.Created,t.SubmissionDate)',date('Y'),true);
     }
