@@ -78,9 +78,24 @@ echo '<br/>'
         'placement' => 'right',
         'title' => 'Дата надходження та індекс документа',
         ));
+        echo " ";
+          $controller->widget('editable.EditableField', array(
+          'type' => 'date',
+          'model' => $data,
+          'attribute' => 'SubmissionDate',
+          'pk' => $data->idDocument,
+          'url' => $controller->createUrl('/documents/updateEditable',array('field' => 'SubmissionDate')),
+          'placement' => 'right',
+          'format' => 'yyyy-mm-dd', //format in which date is expected from model and submitted to server
+          'viewformat' => 'dd.mm.yyyy', //format in which date is display
+          'title' => 'Вкажіть дату надходження',
+           'options' => array('onblur' => 'submit'),
+          ));
       } else {
         echo ($data->DocumentInputNumber) ? $data->DocumentInputNumber :
           '<span class=\'absent_value\'>Не вказано</span>';
+        echo ($data->SubmissionDate) ? $data->SubmissionDate :
+          '';
       }
       ?> <br/>
       <span class="dfheader">Дата та індекс</span><br/>

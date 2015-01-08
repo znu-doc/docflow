@@ -52,28 +52,48 @@
     
     <div class='row-fluid'>
       <div class="span6 dfbox">
-        <div class="span12 dfheader">Дата надходження та індекс документа</div>
-        <div class="span12">
-        <?php
-        if (Yii::app()->user->checkAccess('asOffice')){
+        <div class="row-fluid">
+          <div class="span6">
+            <div class="span12 dfheader">Дата надходження
+            </div>
+            <div class="span6">
+            <?php
+            if (Yii::app()->user->checkAccess('asOffice')){
 
-    $attr = 'DocumentInputNumber';
-    $attr_title = 'Дата надходж. та індекс документа';
-    $this->widget('editable.EditableField', array(
-     'type' => 'typeahead',
-     'attribute' => $attr,
-     'name' => $attr,
-     'model' => $model,
-     'url' => Yii::app()->CreateUrl('/documents/updateEditable',array('field' => $attr)),
-     'title' => $attr_title,
-      'source' => '../documents/AjaxItems?attr=DocumentInputNumber',
-     'mode' => 'popup',
-     'showbuttons' => false,
-     'options' => array('onblur' => 'submit'),
-     'placement' => 'right',
-    ));
-        }
-        ?>
+            $this->widget('editable.EditableField', array(
+            'type' => 'date',
+            'model' => $model,
+            'attribute' => 'SubmissionDate',
+            'pk' => $model->idDocument,
+            'url' => $this->createUrl('/documents/updateEditable',array('field' => 'SubmissionDate')),
+            'placement' => 'right',
+            'format' => 'yyyy-mm-dd', //format in which date is expected from model and submitted to server
+            'viewformat' => 'dd.mm.yyyy', //format in which date is display
+            'title' => 'Вкажіть дату надходження',
+             'options' => array('onblur' => 'submit'),
+            ));
+              }
+            ?>
+            </div>
+          </div>
+          <div class="span6">
+            <div class="span12 dfheader">Категорія <span style="color: red;">(будьте уважні)</span></div>
+            <div class="span12">
+            <?php
+            $this->widget('editable.EditableField', array(
+             'type' => 'select',
+             'attribute' => 'DocumentCategoryID',
+             'name' => 'DocumentCategoryID',
+             'model' => $model,
+             'url' => $this->createUrl('/documents/updateEditable',array('field' => 'DocumentCategoryID')),
+             'title' => 'Категорія документа',
+             'source' => $cat_list,
+             'placement' => 'right', 'mode' => 'popup',
+             'showbuttons' => false,
+           ));
+            ?>
+            </div>
+          </div>
         </div>
       </div>
       <div class="span6 dfbox">
@@ -227,22 +247,7 @@
     
     <div class='row-fluid'>
       <div class="span6 dfbox">
-        <div class="span12 dfheader">Категорія <span style="color: red;">(будьте уважні)</span></div>
-        <div class="span12">
-        <?php
-        $this->widget('editable.EditableField', array(
-         'type' => 'select',
-         'attribute' => 'DocumentCategoryID',
-         'name' => 'DocumentCategoryID',
-         'model' => $model,
-         'url' => $this->createUrl('/documents/updateEditable',array('field' => 'DocumentCategoryID')),
-         'title' => 'Категорія документа',
-         'source' => $cat_list,
-         'placement' => 'right', 'mode' => 'popup',
-         'showbuttons' => false,
-       ));
-        ?>
-        </div>
+
       </div>
       <div class="span6 dfbox">
         <div class="span12 dfheader">Тип документа</div>
