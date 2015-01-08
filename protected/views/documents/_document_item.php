@@ -68,6 +68,7 @@ echo '<br/>'
     <div class="dfbox dfbox120 span3">
       <span class="dfheader">Дата надходження та індекс</span><br/>
       <?php
+      $n = preg_match('/([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4,4})/', $data->DocumentInputNumber, $matches);
       if ($controller->CheckDeptAccess($data->UserID,false) || Yii::app()->user->CheckAccess('CanWatchAllDocs')){
         $controller->widget('editable.EditableField', array(
         'type' => 'textarea',
@@ -79,6 +80,7 @@ echo '<br/>'
         'title' => 'Дата надходження та індекс документа',
         ));
         echo " ";
+        if ($data->DocumentInputNumber && !$n){
           $controller->widget('editable.EditableField', array(
           'type' => 'date',
           'model' => $data,
@@ -91,10 +93,11 @@ echo '<br/>'
           'title' => 'Вкажіть дату надходження',
            'options' => array('onblur' => 'submit'),
           ));
+        }
       } else {
         echo ($data->DocumentInputNumber) ? $data->DocumentInputNumber :
           '<span class=\'absent_value\'>Не вказано</span>';
-        echo ($data->SubmissionDate) ? $data->SubmissionDate :
+        echo ($data->SubmissionDate && $data->DocumentInputNumber && !$n) ? $data->SubmissionDate :
           '';
       }
       ?> <br/>
