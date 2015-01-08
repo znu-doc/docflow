@@ -246,7 +246,7 @@ class Documents extends CActiveRecord {
     if ($this->DocYear){
       $criteria->compare('t.SubmissionDate',$this->DocYear,true);
     } else {
-      $criteria->compare('t.SubmissionDate',date('Y'),true);
+      $criteria->compare('if(isnull(t.SubmissionDate),t.Created,t.SubmissionDate)',date('Y'),true);
     }
     if (!empty($this->searchDocflow)){
       $criteria->compare('docflows.ControlDate', $this->searchDocflow->ControlDate, true);
