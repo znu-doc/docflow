@@ -19,6 +19,7 @@
  * @property integer $DocumentTypeID
  * @property string $Created
  * @property integer $DocumentVisibility
+ * @property string $SubmissionDate
  *
  * The followings are the available model relations:
  * @property Docflowanswers[] $docflowanswers
@@ -82,7 +83,7 @@ class Documents extends CActiveRecord {
         array('DocumentName', 'required'),
         array('UserID, DocumentCategoryID, DocumentTypeID, DocumentVisibility', 
           'numerical', 'integerOnly' => true),
-        array('Created', 'length', 'max' => 128),
+        array('Created, SubmissionDate', 'length', 'max' => 128),
         array('DocumentName, DocumentInputNumber, DocumentOutputNumber, signed, DocumentForWhom, mark, '
            . 'Correspondent, ControlField', 
           'length', 'max' => 255),
@@ -91,7 +92,7 @@ class Documents extends CActiveRecord {
         // Please remove those attributes that should not be searched.
         array('idDocument, DocumentName, DocumentDescription, UserID, DocumentInputNumber, '
             . 'DocumentOutputNumber, signed, DocumentForWhom, DocumentCategoryID, DocumentTypeID,'
-            . 'Correspondent, mark, Created, DocumentVisibility, ControlField', 
+            . 'Correspondent, mark, Created, DocumentVisibility, ControlField, SubmissionDate', 
            'safe', 'on' => 'search'),
     );
   }
@@ -143,6 +144,7 @@ class Documents extends CActiveRecord {
         'mark' => 'Відмітки про виконання',
         "Created" => "Створено",
         "DocumentVisibility" => "DocumentVisibility",
+        "SubmissionDate" => "Дата надходження",
     );
   }
 
@@ -232,6 +234,7 @@ class Documents extends CActiveRecord {
     $criteria->compare('t.DocumentForWhom', $this->DocumentForWhom, true);
     $criteria->compare('t.signed', $this->signed, true);
     $criteria->compare('t.Created', $this->Created, true);
+    $criteria->compare('t.SubmissionDate', $this->SubmissionDate, true);
     $criteria->compare('t.UserID', $this->UserID);
     $criteria->compare('t.DocumentTypeID', $this->DocumentTypeID);
     if ($this->DocumentVisibility && !$this->idDocument){
@@ -240,7 +243,11 @@ class Documents extends CActiveRecord {
     } else if (!$this->idDocument) {
       $criteria->addCondition('t.DocumentVisibility IS NULL OR t.DocumentVisibility=0');
     }
-    $criteria->compare('SUBSTRING(t.DocumentInputNumber,-6)',$this->DocYear,true);
+    if ($this->DocYear){
+      $criteria->compare('t.SubmissionDate',$this->DocYear,true);
+    } else {
+      $criteria->compare('t.SubmissionDate',date('Y'),true);
+    }
     if (!empty($this->searchDocflow)){
       $criteria->compare('docflows.ControlDate', $this->searchDocflow->ControlDate, true);
       $criteria->compare('docflows.idDocFlow', $this->searchDocflow->idDocFlow);
