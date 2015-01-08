@@ -63,7 +63,12 @@
     </tr>
     <tr style="height: 80px;vertical-align: middle;">
       <td class="common half">
-        <?php echo $model->DocumentInputNumber; ?>
+        <?php 
+         echo ($model->DocumentInputNumber) ? $model->DocumentInputNumber. ' ' :
+          ' ';
+         echo ($model->SubmissionDate) ? date('d.m.Y',strtotime($model->SubmissionDate)) :
+          '';
+        ?>
         <br/>
         <div class='slabel'><b>Дата надходження та індекс документа</b></div>
       </td>
