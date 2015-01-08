@@ -387,9 +387,10 @@ order by DepartmentName
   /**
    * Метод формування дати надходження та індекса документа
    * @param integer $id ID : documentcategory.idDocumentCategory
+   * @param string $SubmissionDate
    * @return string
    */
-  protected function ajaxMakeInputNumber($id) {
+  protected function ajaxMakeInputNumber($id,$SubmissionDate) {
     $model = Documentcategory::model()->findByPk($id);
     if (!$model) {
       return;
@@ -403,6 +404,7 @@ order by DepartmentName
     $criteria = new CDbCriteria();
     $criteria->compare('DocumentCategoryID', $model->idDocumentCategory);
     $criteria->addCondition('DocumentInputNumber NOT LIKE ""');
+    $criteria->compare('SubmissionDate',date('Y',strtotime($SubmissionDate)),true);
     $criteria->order = 'Created DESC';
     $docs = Documents::model()->findAll($criteria);
     $i = 0;
@@ -410,11 +412,11 @@ order by DepartmentName
       $n = preg_match('/([0-9]+)[\/|\\\].+/', $doc->DocumentInputNumber, $matches);
       if ($n) {
         $next_n = (integer) $matches[1] + 1;
-        $number = '№ ' . $next_n . '/' . $postfix . ' від ' . date('d.m.Y');
+        $number = '№ ' . $next_n . '/' . $postfix . ' від ';
         return $number;
       }
     }
-    $number = '№ 1/' . $postfix . ' від ' . date('d.m.Y');
+    $number = '№ 1/' . $postfix . ' від ';
     return $number;
   }
 
@@ -427,7 +429,8 @@ order by DepartmentName
       $model = Documents::model()->findByPk($id);
       if ($model){
         $cat_id = $model->DocumentCategoryID;
-        $autonum = $this->ajaxMakeInputNumber($cat_id);
+        $SubmissionDate = $model->SubmissionDate;
+        $autonum = $this->ajaxMakeInputNumber($cat_id,$SubmissionDate);
         if ($autonum){
           $model->DocumentInputNumber = $autonum;
         }
