@@ -123,6 +123,7 @@ class DocumentsController extends Controller {
       $dmodel = new Documents();
       $dmodel->DocumentCategoryID = 14;
       $dmodel->DocumentTypeID = 1;
+      $dmodel->SubmissionDate = date("Y-m-d");
       $dmodel->UserID = Yii::app()->user->id;
       $dmodel->DocumentName = 'Натисніть, щоб ввести значення';
       if (!$dmodel->save()){
