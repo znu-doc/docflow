@@ -67,7 +67,8 @@
          echo ($model->DocumentInputNumber) ? 
           $model->DocumentInputNumber. ' ' :
           ' ';
-         echo ($model->SubmissionDate && !preg_match('/\d{1,2}\.\d{1,2}\.\d{4,4}/',$model->DocumentInputNumber, $m)) ? 
+         echo ($model->SubmissionDate && !preg_match('/\d{1,2}\.\d{1,2}\.\d{4,4}/',$model->DocumentInputNumber, $m) && 
+              (strlen($model->DocumentInputNumber)>0)) ? 
           date('d.m.Y',strtotime($model->SubmissionDate)) :
           '';
         ?>

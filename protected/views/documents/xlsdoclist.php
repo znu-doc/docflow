@@ -58,15 +58,17 @@ $i = 1;
       foreach ($model->docflows as $flow){
         $controls[]= $flow->ControlDate;
       }
-      $worksheet->write($i, 0, iconv("utf-8", "windows-1251",$model->DocumentInputNumber),
-              $format_wordwrap);
       $input_num = (($model->DocumentInputNumber) ? 
-      $model->DocumentInputNumber : '') 
+        $model->DocumentInputNumber : '') 
         . ' ' 
-        . (($model->SubmissionDate && !preg_match('/\d{1,2}\.\d{1,2}\.\d{4,4}/',$model->DocumentInputNumber, $m)) ? 
+        . (($model->SubmissionDate && 
+              !preg_match('/\d{1,2}\.\d{1,2}\.\d{4,4}$/',$model->DocumentInputNumber, $m) && 
+              (strlen($model->DocumentInputNumber)>0)) ? 
             date('d.m.Y',strtotime($model->SubmissionDate)) :
             '');
-      $worksheet->write($i, 1, iconv("utf-8", "windows-1251",$input_num),
+      $worksheet->write($i, 0, iconv("utf-8", "windows-1251",$input_num),
+              $format_wordwrap);
+      $worksheet->write($i, 1, iconv("utf-8", "windows-1251",$model->DocumentOutputNumber),
               $format_wordwrap);
       $worksheet->write($i, 2, iconv("utf-8", "windows-1251",$model->Correspondent),
               $format_wordwrap);
