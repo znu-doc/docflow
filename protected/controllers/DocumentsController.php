@@ -404,7 +404,8 @@ order by DepartmentName
     $postfix = $matches[1];
     $criteria = new CDbCriteria();
     $criteria->compare('DocumentCategoryID', $model->idDocumentCategory);
-    $criteria->addCondition('DocumentInputNumber NOT LIKE ""');
+    $criteria->addCondition('(DocumentInputNumber NOT LIKE "") AND (DocumentInputNumber is not null)');
+    $criteria->addCondition('(DocumentVisibility > 0) AND (DocumentVisibility is not null)');
     $criteria->compare('SubmissionDate',date('Y',strtotime($SubmissionDate)),true);
     $criteria->order = 'Created DESC';
     $docs = Documents::model()->findAll($criteria);

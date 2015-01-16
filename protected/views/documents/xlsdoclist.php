@@ -60,7 +60,13 @@ $i = 1;
       }
       $worksheet->write($i, 0, iconv("utf-8", "windows-1251",$model->DocumentInputNumber),
               $format_wordwrap);
-      $worksheet->write($i, 1, iconv("utf-8", "windows-1251",$model->DocumentOutputNumber),
+      $input_num = (($model->DocumentInputNumber) ? 
+      $model->DocumentInputNumber : '') 
+        . ' ' 
+        . (($model->SubmissionDate && !preg_match('/\d{1,2}\.\d{1,2}\.\d{4,4}/',$model->DocumentInputNumber, $m)) ? 
+            date('d.m.Y',strtotime($model->SubmissionDate)) :
+            '');
+      $worksheet->write($i, 1, iconv("utf-8", "windows-1251",$input_num),
               $format_wordwrap);
       $worksheet->write($i, 2, iconv("utf-8", "windows-1251",$model->Correspondent),
               $format_wordwrap);

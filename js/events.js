@@ -228,8 +228,8 @@
         if (mtchs !== null){
           switch (i){
             case 0:
-              ret.start_date = new Date(parseInt(mtchs[3]),parseInt(mtchs[2])-1,parseInt(mtchs[1]));
-              ret.end_date = new Date(parseInt(mtchs[6]),parseInt(mtchs[5])-1,parseInt(mtchs[4]));
+              ret.start_date = new Date(parseInt(mtchs[3],10),parseInt(mtchs[2],10)-1,parseInt(mtchs[1],10));
+              ret.end_date = new Date(parseInt(mtchs[6],10),parseInt(mtchs[5],10)-1,parseInt(mtchs[4],10));
               if (
                   ret.start_date == 'Invalid Date'
                   || ret.end_date == 'Invalid Date'
@@ -239,8 +239,8 @@
               return ret;
               break;
             case 1:
-              ret.start_date = new Date(parseInt(mtchs[4]),parseInt(mtchs[3])-1,parseInt(mtchs[1]));
-              ret.end_date = new Date(parseInt(mtchs[4]),parseInt(mtchs[3])-1,parseInt(mtchs[2]));
+              ret.start_date = new Date(parseInt(mtchs[4],10),parseInt(mtchs[3],10)-1,parseInt(mtchs[1],10));
+              ret.end_date = new Date(parseInt(mtchs[4],10),parseInt(mtchs[3],10)-1,parseInt(mtchs[2],10));
               if (
                   ret.start_date == 'Invalid Date'
                   || ret.end_date == 'Invalid Date'
@@ -250,7 +250,7 @@
               return ret;
               break;
             case 2:
-              ret.start_date = new Date(parseInt(mtchs[3]),parseInt(mtchs[2])-1,parseInt(mtchs[1]));
+              ret.start_date = new Date(parseInt(mtchs[3],10),parseInt(mtchs[2],10)-1,parseInt(mtchs[1],10));
               ret.end_date = ret.start_date;
               if (ret.start_date == 'Invalid Date'){
                 return null;
@@ -258,8 +258,8 @@
               return ret;
               break;
             case 3:
-              ret.start_date = new Date(_self._start_date.getFullYear(),parseInt(mtchs[2])-1,parseInt(mtchs[1]));
-              ret.end_date = new Date((_self._start_date.getFullYear() + _self.m_years),parseInt(mtchs[2])-1,parseInt(mtchs[1]));
+              ret.start_date = new Date(_self._start_date.getFullYear(),parseInt(mtchs[2],10)-1,parseInt(mtchs[1],10));
+              ret.end_date = new Date((_self._start_date.getFullYear() + _self.m_years),parseInt(mtchs[2],10)-1,parseInt(mtchs[1],10));
               ret.step = [1,0,0];
               if (
                   ret.start_date == 'Invalid Date'
@@ -270,8 +270,8 @@
               return ret;
               break;
             case 4:
-              ret.start_date = new Date(parseInt(mtchs[4]),parseInt(mtchs[2])-1,parseInt(mtchs[1]));
-              ret.end_date = new Date(parseInt(mtchs[4]),parseInt(mtchs[3])-1,parseInt(mtchs[1]));
+              ret.start_date = new Date(parseInt(mtchs[4],10),parseInt(mtchs[2],10)-1,parseInt(mtchs[1],10));
+              ret.end_date = new Date(parseInt(mtchs[4],10),parseInt(mtchs[3],10)-1,parseInt(mtchs[1],10));
               if (
                   ret.start_date == 'Invalid Date'
                   || ret.end_date == 'Invalid Date'
@@ -287,7 +287,7 @@
               if (mtchs[2] === undefined){
                 ret.start_date = _self._start_date;
               } else {
-                ret.start_date = new Date(parseInt(mtchs[5]),parseInt(mtchs[4])-1,parseInt(mtchs[3]));
+                ret.start_date = new Date(parseInt(mtchs[5],10),parseInt(mtchs[4],10)-1,parseInt(mtchs[3],10));
               }
               if (
                   ret.start_date == 'Invalid Date'
@@ -304,7 +304,7 @@
               if (mtchs[2] === undefined){
                 ret.end_date = new Date(ret.start_date.getFullYear(),ret.start_date.getMonth()+4,0);
               } else {
-                ret.end_date = new Date(parseInt(mtchs[8]),parseInt(mtchs[7])-1,parseInt(mtchs[6]));
+                ret.end_date = new Date(parseInt(mtchs[8],10),parseInt(mtchs[7],10)-1,parseInt(mtchs[6],10));
               }
               ret.step = [0,0,7];
               return ret;

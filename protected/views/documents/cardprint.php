@@ -64,9 +64,11 @@
     <tr style="height: 80px;vertical-align: middle;">
       <td class="common half">
         <?php 
-         echo ($model->DocumentInputNumber) ? $model->DocumentInputNumber. ' ' :
+         echo ($model->DocumentInputNumber) ? 
+          $model->DocumentInputNumber. ' ' :
           ' ';
-         echo ($model->SubmissionDate) ? date('d.m.Y',strtotime($model->SubmissionDate)) :
+         echo ($model->SubmissionDate && !preg_match('/\d{1,2}\.\d{1,2}\.\d{4,4}/',$model->DocumentInputNumber, $m)) ? 
+          date('d.m.Y',strtotime($model->SubmissionDate)) :
           '';
         ?>
         <br/>
