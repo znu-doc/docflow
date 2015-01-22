@@ -484,8 +484,8 @@ class EventsController extends Controller {
         . '<div class="EventPlace">'
             .((empty($model->EventPlace))? 
             "не вказано":$model->EventPlace) . '</div>'
-        //. '<div class="DateTimeHeader">Дата і час: </div> '
-        //. '<div class="DateTime">'.$date_time . '</div>'
+        . '<div class="DateTimeHeader">Дата і час: </div> '
+        . '<div class="DateTime">'.$date_time . '</div>'
         . '<div class="EventDescription">'.$model->EventDescription . '</div>'
         . '<div class="InvitedHeader">Запрошені: </div>'
         . '<div class="InvitedList">'.((empty($invited))? "не вказано":$invited).'</div>'
