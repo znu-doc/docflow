@@ -409,7 +409,11 @@ class EventsController extends Controller {
     $date_intervals = array();
     // підключення
     $url = "http://sites.znu.edu.ua/cms/index.php";
-    //$url = "http://10.1.22.8/cms/index.php"; //test-service
+    $api_key='dksjf;aj;weio[wlooiuoiuhlk;lk\'';
+    $site_id = 89;
+//     $url = "http://10.1.22.8/cms/index.php"; //test-service
+//     $api_key='1234567';
+//     $site_id = 62;
     $ch = curl_init($url);
     $invited = "";
     $organizers = "";
@@ -445,8 +449,11 @@ class EventsController extends Controller {
     }
     
     for ($i = 0; $i < count($model->event_dates) && is_array($model->event_dates); $i++){
-      $begin_timestamp = strtotime($model->event_dates[$i] . ' ' . $model->StartTime);
-      $end_timestamp = strtotime($model->event_dates[$i] . ' ' . $model->FinishTime);
+      $begin_time = (strlen($model->StartTime) > 0)? $model->StartTime : "00:00:00";
+      $end_time = (strlen($model->FinishTime) > 0)? $model->FinishTime : "23:59:59";
+      
+      $begin_timestamp = strtotime($model->event_dates[$i] . ' ' . $begin_time);
+      $end_timestamp = strtotime($model->event_dates[$i] . ' ' . $end_time);
       $date_intervals[] = array(
          'pochrik' => date('Y',$begin_timestamp),
          'pochmis' => date('m',$begin_timestamp),
@@ -465,11 +472,10 @@ class EventsController extends Controller {
     }
     // дані для відправки
     $data = array(
-      'api_key' => 'dksjf;aj;weio[wlooiuoiuhlk;lk\'',
-      //'api_key' => '1234567',//test service
+      'api_key' => $api_key,
       'action' => 'calendar/api/'.(($model->ExternalID)? 'update':'create'),
       'lang' => 'ukr',
-      'site_id' => 89,//62,
+      'site_id' => $site_id,
       'nazva' => $model->EventName,
       'vis' => 1,
       'categories' => implode(',',
@@ -486,7 +492,7 @@ class EventsController extends Controller {
             "не вказано":$model->EventPlace) . '</div>'
         . '<div class="DateTimeHeader">Дата і час: </div> '
         . '<div class="DateTime">'.$date_time . '</div>'
-        . '<div class="EventDescription">'.$model->EventDescription . '</div>'
+        . '<div class="EventDescription">'. $model->EventDescription . '</div>'
         . '<div class="InvitedHeader">Запрошені: </div>'
         . '<div class="InvitedList">'.((empty($invited))? "не вказано":$invited).'</div>'
         . '<div class="OrganizersHeader">Організатори: </div>'

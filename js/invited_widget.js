@@ -95,7 +95,7 @@ function InvitedWidget(input_field,left_area,right_area,add_all_tool,add_text_to
   });
   
   this.$add_text_tool.click(function(){
-    var text_value = _self.$input_field.val();
+    var text_value = _self.$input_field.val().replace(/\"/g,"“").replace(/\'/g,"“");
     var id_add = Math.uuid();
     if (text_value.length === 0){
       return false;
