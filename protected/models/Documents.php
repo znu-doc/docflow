@@ -212,7 +212,7 @@ class Documents extends CActiveRecord {
       //якщо є пошуковий токен, то врахувати його
       $criteria->compare('CONCAT_WS(" ",t.DocumentName,t.DocumentDescription,'
           . 't.Correspondent,t.Created,t.DocumentInputNumber,t.DocumentOutputNumber,t.signed,t.DocumentForWhom, '
-              . 't.ControlField)'
+              . 't.ControlField, type.DocumentTypeName)'
         ,$this->searchField,true);
     }
     if ($this->ControlDateField){
